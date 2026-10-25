@@ -1,0 +1,43 @@
+extends CharacterBody3D
+
+@export var max_speed: float = 40.0
+@export var acceleration: float = 50.0
+@export var braking: float = 20.0
+@export var turn_speed: float = 1.8
+@export var thrust_grip: float = 5.0
+
+func _physics_process(delta: float) -> void:
+	var throttle := Input.get_action_strength("ui_up")
+	var brake := Input.get_action_strength("ui_down")
+	var steering := Input.get_axis("ui_right", "ui_left")
+
+	# Rotation is independent of our movement direction.
+	rotate_y(steering * turn_speed * delta)
+
+	if throttle > 0.0:
+		var speed := velocity.length()
+		speed = move_toward(
+			speed, max_speed, acceleration * throttle * delta
+		)
+
+		var forward := -global_transform.basis.z
+		var direction := forward
+
+		if velocity.length_squared() > 0.001:
+			var current_direction := velocity.normalized()
+			var angle := current_direction.signed_angle_to(
+				forward, Vector3.UP
+			)
+			var grip := 1.0 - exp(-thrust_grip * throttle * delta)
+			direction = current_direction.rotated(
+				Vector3.UP, angle * grip
+			)
+
+		velocity = direction * speed
+
+	if brake > 0.0:
+		velocity = velocity.move_toward(
+			Vector3.ZERO, braking * brake * delta
+		)
+
+	move_and_slide()

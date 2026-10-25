@@ -1,0 +1,24 @@
+# Hover Racer test circuit
+
+Open `project.godot`, then run Main with F6. After input-map edits, reopen the project; preserve any unsaved editor work separately first.
+
+Each stick's vertical axis controls its own thruster. Up is forward thrust; down is reverse. Equal forward or backward inputs travel straight. Left forward + right backward rotates right; the opposite rotates left. One thruster or unequal thrust combines movement and turning. Both neutral cuts thrust and rotation while preserving drifting momentum. Reverse thrust first brakes existing forward motion before reversing. Powered grip assists direction changes.
+
+Keyboard: **W/S** controls the left thruster, **Up/Down arrows** the right. **Y/R** resets. With both sticks forward, angling them left/right adds gentle steering and visible bank. Opposing horizontal angles cancel; horizontal inputs are inactive when either thruster is neutral or in reverse. Triggers remain unbound. The HUD reports each thruster percentage. Each exhaust glows cyan behind its thruster for forward thrust, orange at the front for reverse; strength scales with stick input.
+
+The circuit is approximately 918 metres long and 28 metres wide, with six rounded corners, a dogleg, and two smooth hills rising 10 and 14 metres. The physical ship follows road collision height; mesh banking, stern swing, powered pitch, and coasting skips do not bob or tilt the camera/collider. FOV changes smoothly by at most 8 degrees. Falling off the course resets the ship.
+
+Ship Inspector tuning: max speed 40 m/s, combined acceleration 110 m/s², maximum differential turn speed 1.8 rad/s, visual bank up to 36 degrees, additional fine turn speed 0.65 rad/s, thrust grip 6.5, stick deadzone 0.18. Single-thruster input produces half the combined acceleration and half the maximum turn rate. Forward and reverse share the speed cap; repeated presses cannot stack boosts.
+
+Run checks from this project directory with the Godot executable:
+
+```
+Godot --headless --path . --script res://tests/controller_input.gd
+Godot --headless --path . --script res://tests/hill_course.gd
+```
+
+These simulate controls, inspect road/barrier collisions, and traverse both hills at maximum speed. They cannot judge physical controller feel or visual comfort. The hill test uses the default tuning above.
+
+`tools/build_course.gd` generates the saved TestTrack scene and `tools/course_samples.json`; running it replaces TestTrack.tscn, so back up any manual course edits first. Pre-update files are in `backups/before-speed-hills` (project settings backup has a `.bak` suffix).
+
+Files before the independent-thruster control change are preserved in `backups/before-independent-thrusters`, with `.bak` suffixes.

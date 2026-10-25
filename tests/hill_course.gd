@@ -1,0 +1,88 @@
+extends SceneTree
+var failures := 0
+
+func require(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)
+
+func _initialize() -> void:
+	call_deferred("check")
+
+func horizontal(ship: CharacterBody3D) -> Vector3:
+	return Vector3(ship.velocity.x,0,ship.velocity.z)
+
+func check() -> void:
+	var scene = load("res://Main.tscn").instantiate()
+	root.add_child(scene)
+	await physics_frame
+	await physics_frame
+	var ship = scene.get_node("SHIP")
+	var space = scene.get_world_3d().direct_space_state
+	var samples = JSON.parse_string(FileAccess.get_file_as_string("res://tools/course_samples.json"))
+	for sample in samples:
+		var a: Array = sample.point
+		var b: Array = sample.normal
+		var center := Vector3(a[0],a[1],a[2])
+		var normal := Vector3(b[0],b[1],b[2])
+		for offset in [-12.0,0.0,12.0]:
+			var point: Vector3 = center + normal * offset
+			var ray := PhysicsRayQueryParameters3D.create(point+Vector3.UP*20,point-Vector3.UP*2,1,[ship.get_rid()])
+			var road = space.intersect_ray(ray)
+			require(not road.is_empty(), "Road gap: %s" % point)
+			if not road.is_empty():
+				require(absf(road.position.y-center.y)<0.05, "Uneven cross section: %s" % point)
+		for side in [-1,1]:
+			var point := center + Vector3.UP*1.5
+			var wall = space.intersect_ray(PhysicsRayQueryParameters3D.create(point,point+normal*side*17,2))
+			require(not wall.is_empty(), "Barrier gap: %s" % point)
+	# Traverse each complete hill under power at maximum speed.
+	var min_clearance := 100.0
+	var max_clearance := -100.0
+	for route in [[Vector3(55,2,-5),Vector3(0,0,-ship.max_speed),75],[Vector3(-150,2,-35),Vector3(0,0,ship.max_speed),88]]:
+		ship.position = route[0]
+		ship.rotation = Vector3(0,atan2(-route[1].x,-route[1].z),0)
+		ship.velocity = route[1]
+		ship.reset_visuals()
+		Input.action_press("thrust")
+		var peak := 0.0
+		for frame in range(route[2]):
+			await physics_frame
+			var road: Dictionary = ship.road_at(ship.global_position)
+			require(not road.is_empty(), "Lost road on hill at %s frame %d" % [ship.position,frame])
+			if not road.is_empty():
+				var clearance: float = ship.global_position.y-road.position.y
+				min_clearance = minf(min_clearance,clearance)
+				max_clearance = maxf(max_clearance,clearance)
+				require(clearance>0.85 and clearance<2.2, "Unsafe hover clearance: %.3f" % clearance)
+			peak = maxf(peak,ship.position.y)
+			require(absf(horizontal(ship).length()-ship.max_speed)<0.01, "Hill altered horizontal coast momentum")
+			require(ship.rotation.x == 0 and ship.rotation.z == 0, "Physical roll or pitch")
+		require(peak>11.0,"Ship failed to follow actual hill height")
+	Input.action_release("thrust")
+	# Powered launch reaches strong speed promptly and repeated taps cannot stack speed.
+	ship.position = Vector3(55,2,70)
+	ship.velocity = Vector3.ZERO
+	ship.rotation = Vector3.ZERO
+	ship.reset_visuals()
+	Input.action_press("thrust")
+	for frame in range(13): await physics_frame
+	require(horizontal(ship).length()>20,"Launch acceleration too weak")
+	for pulse in range(4):
+		Input.action_press("thrust")
+		for frame in range(5): await physics_frame
+		Input.action_release("thrust")
+		for frame in range(5): await physics_frame
+		require(horizontal(ship).length()<=ship.max_speed+0.01,"Repeated throttle stacked speed")
+	var coast := horizontal(ship)
+	for frame in range(30): await physics_frame
+	require(horizontal(ship).length()<coast.length() and horizontal(ship).length()>0,"Release should glide while slowing")
+	require(ship.power_blend<0.02 and not ship.engines[0].visible and not ship.engines[1].visible,"Powered cue did not fade")
+	require(ship.camera.fov>=ship.camera_rest_fov and ship.camera.fov<=ship.camera_rest_fov+ship.speed_fov+ship.powered_fov+ship.kick_fov+.01,"Excessive FOV")
+	require(ship.visual.position.distance_to(ship.visual_rest_position)<0.25,"Skip too strong")
+	print("Hill course: %d cross sections; two max-speed hill traversals; clearance %.2f–%.2fm; launch, coast and speed cap; failures=%d" % [samples.size(),min_clearance,max_clearance,failures])
+	scene.queue_free()
+	await process_frame
+	OS.delay_msec(120) # Let the audio mixer retire stopped playback buffers.
+	await process_frame
+	quit(0 if failures==0 else 1)

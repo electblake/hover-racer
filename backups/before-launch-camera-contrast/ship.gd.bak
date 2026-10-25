@@ -1,0 +1,193 @@
+extends CharacterBody3D
+
+@export var max_speed: float = 52.0
+@export var acceleration: float = 145.0
+@export var coast_deceleration: float = 13.0 # About four seconds from 52 m/s.
+@export var turn_speed: float = 1.8
+@export var thrust_grip: float = 6.5
+@export var bank_degrees: float = 36.0
+@export var braking: float = 60.0
+@export_range(0.0, 0.25) var trigger_deadzone: float = 0.06
+@export_range(0.0, 0.5) var stick_deadzone: float = 0.18
+@export var hover_amplitude: float = 0.10
+@export var hover_height: float = 1.5
+@export var hover_response: float = 22.0
+
+@onready var visual: MeshInstance3D = $MeshInstance3D
+@onready var camera: Camera3D = $Camera3D
+var visual_rest_position: Vector3
+var visual_rest_rotation: Vector3
+var camera_rest_fov: float
+var camera_rest_position: Vector3
+var pod_visual
+var engine_audio: Array[AudioStreamPlayer] = []
+var wind_audio: AudioStreamPlayer
+var hover_time := 0.0
+var power_blend := 0.0
+var road_normal := Vector3.UP
+var engines: Array[MeshInstance3D] = []
+var engine_levels := Vector2.ZERO
+var left_thrust := 0.0
+var right_thrust := 0.0
+var throttle_input := 0.0
+var brake_input := 0.0
+var left_steering := 0.0
+var right_steering := 0.0
+
+func _ready() -> void:
+	visual_rest_position = visual.position
+	visual_rest_rotation = visual.rotation
+	camera_rest_fov = camera.fov
+	camera_rest_position = camera.position
+	collision_mask = 3 # Road and barriers; road sampling ignores the barriers.
+	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
+	visual.mesh = null
+	pod_visual = preload("res://pod_visual.gd").new()
+	visual.add_child(pod_visual)
+	engines = pod_visual.exhausts
+	for side in ["Left", "Right"]:
+		var player := _audio_loop("res://audio/engine.wav",side+"EngineAudio")
+		engine_audio.append(player)
+	wind_audio = _audio_loop("res://audio/wind.wav","WindAudio")
+
+func _audio_loop(path: String, name_: String) -> AudioStreamPlayer:
+	var player := AudioStreamPlayer.new()
+	player.name = name_
+	var stream := AudioStreamWAV.load_from_file(path)
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_begin = 0
+	stream.loop_end = roundi(stream.get_length()*stream.mix_rate)
+	player.stream = stream
+	player.volume_db = -60
+	add_child(player)
+	return player
+
+func _update_audio(speed_ratio: float) -> void:
+	# Engine sound is disabled. Preserve the assets for later, but never play them.
+	for player in engine_audio:
+		if player.playing: player.stop()
+		player.volume_db = -80
+	wind_audio.volume_db = lerpf(-48,-25,pow(speed_ratio,0.65))
+	wind_audio.pitch_scale = 0.7+speed_ratio*0.65
+	if speed_ratio>0.035 and not wind_audio.playing: wind_audio.play()
+	elif speed_ratio<=0.035 and wind_audio.playing: wind_audio.stop()
+
+func reset_visuals() -> void:
+	hover_time = 0.0
+	power_blend = 0.0
+	road_normal = Vector3.UP
+	visual.position = visual_rest_position
+	visual.rotation = visual_rest_rotation
+	camera.fov = camera_rest_fov
+	camera.position = camera_rest_position
+	for player in engine_audio:
+		player.stop()
+		player.volume_db = -60
+	wind_audio.stop()
+	wind_audio.volume_db = -60
+	engine_levels = Vector2.ZERO
+	left_thrust = 0.0
+	right_thrust = 0.0
+	throttle_input = 0.0
+	brake_input = 0.0
+	left_steering = 0.0
+	right_steering = 0.0
+	for engine in engines:
+		engine.visible = false
+
+func road_at(point: Vector3) -> Dictionary:
+	# Jolt can miss a ray exactly on a shared triangle edge. Tiny fallback offsets
+	# keep suspension continuous at seams without bridging any real track gaps.
+	for offset in [Vector3.ZERO, Vector3(0.04,0,0), Vector3(-0.04,0,0), Vector3(0,0,0.04), Vector3(0,0,-0.04)]:
+		var origin: Vector3 = point + offset
+		var query := PhysicsRayQueryParameters3D.create(origin + Vector3.UP*8.0,origin - Vector3.UP*40.0,1,[get_rid()])
+		var hit := get_world_3d().direct_space_state.intersect_ray(query)
+		if not hit.is_empty():
+			return hit
+	return {}
+
+func steering_input(side: String) -> float:
+	var raw := Input.get_action_raw_strength(side+"_steer_right")-Input.get_action_raw_strength(side+"_steer_left")
+	if absf(raw)<=stick_deadzone: return 0.0
+	return signf(raw)*(absf(raw)-stick_deadzone)/(1.0-stick_deadzone)
+
+func trigger_input(action: String) -> float:
+	var raw := Input.get_action_raw_strength(action)
+	if raw<=trigger_deadzone: return 0.0
+	return (raw-trigger_deadzone)/(1.0-trigger_deadzone)
+
+func _physics_process(delta: float) -> void:
+	throttle_input = trigger_input("thrust")
+	brake_input = trigger_input("brake")
+	left_steering = steering_input("left")
+	right_steering = steering_input("right")
+	# Each stick contributes half the full yaw rate; opposed inputs cancel exactly.
+	var steering := clampf((left_steering+right_steering)*0.5,-1.0,1.0)
+	var yaw_rate := -steering*turn_speed
+	rotate_y(yaw_rate*delta)
+	# Full air brake wins over throttle, including when both triggers are held.
+	var propulsion := throttle_input*(1.0-brake_input)
+	left_thrust = propulsion
+	right_thrust = propulsion
+	var horizontal := Vector3(velocity.x,0,velocity.z)
+	if propulsion>0.001:
+		var forward := -global_transform.basis.z
+		horizontal += forward*acceleration*propulsion*delta
+		var along := forward*horizontal.dot(forward)
+		var sideways := horizontal-along
+		horizontal = (along+sideways*exp(-thrust_grip*propulsion*delta)).limit_length(max_speed)
+	else:
+		# Steering changes facing, never the direction of off-throttle travel.
+		horizontal = horizontal.move_toward(Vector3.ZERO,maxf(coast_deceleration,0.0)*delta)
+	if brake_input>0.0:
+		horizontal = horizontal.move_toward(Vector3.ZERO,maxf(braking,0.0)*brake_input*delta)
+	velocity.x = horizontal.x
+	velocity.z = horizontal.z
+
+	# Look one physics step ahead; vertical suspension never feeds speed or grip.
+	var road := road_at(global_position + horizontal * delta)
+	if not road.is_empty():
+		road_normal = road.normal
+		var target_y: float = road.position.y + hover_height
+		velocity.y = clampf((target_y - global_position.y) * hover_response, -35.0, 35.0)
+	else:
+		velocity.y -= 25.0 * delta
+	move_and_slide()
+	if global_position.y < -30.0:
+		global_position = Vector3(55, 2, 30)
+		rotation = Vector3.ZERO
+		velocity = Vector3.ZERO
+		reset_visuals()
+
+	_update_visuals(delta, propulsion, steering, yaw_rate, horizontal.length())
+
+func _update_visuals(delta: float, propulsion: float, steering: float, yaw_rate: float, speed: float) -> void:
+	hover_time += delta
+	var movement := clampf(speed / maxf(max_speed, 0.01), 0.0, 1.0)
+	var smoothing := 1.0 - exp(-8.0 * delta)
+	var activity := (absf(left_thrust) + absf(right_thrust)) * 0.5
+	power_blend = lerpf(power_blend, activity, 1.0 - exp(-14.0 * delta))
+	var forward := -global_transform.basis.z
+	var slope_pitch := atan2(-road_normal.dot(forward), maxf(road_normal.y, 0.01))
+	visual.rotation.z = lerp_angle(visual.rotation.z, visual_rest_rotation.z + clampf(yaw_rate / maxf(turn_speed, 0.01), -1.0, 1.0) * deg_to_rad(bank_degrees), smoothing)
+	# Boat-like visual oversteer: stronger tail swing while lining up off gas.
+	var combined := absf(steering)
+	var stern_swing := clampf(yaw_rate * 0.13 * (1.0 + combined * 0.4), -0.30, 0.30)
+	stern_swing *= 1.0 - power_blend * 0.35
+	visual.rotation.y = lerp_angle(visual.rotation.y, visual_rest_rotation.y + stern_swing, 1.0-exp(-4.5*delta))
+	visual.rotation.x = lerp_angle(visual.rotation.x, visual_rest_rotation.x + slope_pitch - propulsion * deg_to_rad(4.0), smoothing)
+	# Released throttle has a light, rhythmic skip; only the mesh bobs.
+	var skip := pow(maxf(sin(hover_time * 7.5), 0.0), 2.0) * 0.18 * movement * (1.0-power_blend)
+	var bob := sin(hover_time * 4.2) * hover_amplitude * (0.3 + movement * 0.25)
+	visual.position = visual_rest_position + Vector3.UP * (bob + skip)
+	engine_levels = engine_levels.lerp(Vector2(left_thrust, right_thrust), 1.0-exp(-14.0*delta))
+	pod_visual.animate(engine_levels.x,engine_levels.y,delta)
+	_update_audio(movement)
+	# A short smooth pullback on power; no shake, roll or camera bob.
+	camera.position = camera.position.lerp(camera_rest_position+Vector3(0,0,power_blend*0.55),1.0-exp(-5.0*delta))
+	camera.fov = lerpf(camera.fov, camera_rest_fov + movement * 6.0 + power_blend * 2.0, 1.0-exp(-3.0*delta))
+
+func _exit_tree() -> void:
+	for player in engine_audio:
+		if is_instance_valid(player): player.stop()
+	if is_instance_valid(wind_audio): wind_audio.stop()

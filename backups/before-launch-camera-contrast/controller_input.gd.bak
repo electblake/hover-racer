@@ -1,0 +1,178 @@
+# Godot --headless --fixed-fps 60 --path . --script res://tests/controller_input.gd
+extends SceneTree
+var failures := 0
+var ship: CharacterBody3D
+func require(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)
+func axis(index: int, value: float) -> void:
+	var event := InputEventJoypadMotion.new()
+	event.device = 0
+	event.axis = index
+	event.axis_value = value
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+func key(code: Key, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = code
+	event.keycode = code
+	event.pressed = pressed
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+func frames(count: int) -> void:
+	for i in range(count): await physics_frame
+func horizontal() -> Vector3:
+	return Vector3(ship.velocity.x,0,ship.velocity.z)
+func reset() -> void:
+	for index in [JOY_AXIS_LEFT_X,JOY_AXIS_RIGHT_X,JOY_AXIS_LEFT_Y,JOY_AXIS_RIGHT_Y,JOY_AXIS_TRIGGER_LEFT,JOY_AXIS_TRIGGER_RIGHT]: axis(index,0)
+	ship.position = Vector3(55,2,30)
+	ship.rotation = Vector3.ZERO
+	ship.velocity = Vector3.ZERO
+	ship.reset_visuals()
+func _initialize() -> void:
+	call_deferred("check")
+func check() -> void:
+	var scene = load("res://Main.tscn").instantiate()
+	scene.get_node("TestTrack").free()
+	scene.get_node("CanyonSlice").free()
+	root.add_child(scene)
+	ship = scene.get_node("SHIP")
+	var body := StaticBody3D.new()
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(2000,1,2000)
+	shape.shape = box
+	body.add_child(shape)
+	scene.add_child(body)
+	await frames(3)
+	var camera_rotation: Vector3 = ship.camera.rotation
+	var collision_rest: Transform3D = ship.get_node("CollisionShape3D").transform
+	require(ship.max_speed==52 and ship.acceleration==145,"Preserve speed/launch tuning")
+	for old in ["left_forward","right_forward","left_reverse","right_reverse","left_left","right_left"]:
+		require(not InputMap.has_action(old),"Remove obsolete directional controls")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,1)
+	await frames(12)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Vertical sticks must not control heading/propulsion")
+	reset()
+	axis(JOY_AXIS_TRIGGER_RIGHT,.04)
+	axis(JOY_AXIS_TRIGGER_LEFT,.04)
+	axis(JOY_AXIS_LEFT_X,.1)
+	axis(JOY_AXIS_RIGHT_X,-.1)
+	await frames(5)
+	require(ship.throttle_input==0 and ship.brake_input==0 and horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Trigger/stick deadzones")
+	reset()
+	axis(JOY_AXIS_TRIGGER_RIGHT,.5)
+	await frames(10)
+	var partial: float = horizontal().length()
+	require(partial>5 and partial<15,"Analog RT magnitude")
+	reset()
+	axis(JOY_AXIS_TRIGGER_RIGHT,1)
+	await frames(10)
+	require(horizontal().length()>partial*1.8,"Full RT stronger than partial")
+	await frames(25)
+	require(absf(horizontal().length()-52)<.01,"Active speed cap")
+	require(ship.engines[0].visible and ship.engines[1].visible and is_equal_approx(ship.engine_levels.x,ship.engine_levels.y),"Both engines share RT")
+	reset()
+	axis(JOY_AXIS_LEFT_X,1)
+	await frames(15)
+	var single_yaw: float = absf(ship.rotation.y)
+	require(ship.rotation.y<-.15 and horizontal().is_zero_approx(),"One right stick input rotates right without propulsion")
+	reset()
+	axis(JOY_AXIS_LEFT_X,1)
+	axis(JOY_AXIS_RIGHT_X,1)
+	await frames(15)
+	require(absf(absf(ship.rotation.y)-single_yaw*2)<.02,"Both sticks add to twice one-stick yaw")
+	require(ship.visual.rotation.z<-.2 and ship.visual.rotation.y<-.1,"Visible bank and stronger tail swing")
+	reset()
+	axis(JOY_AXIS_RIGHT_X,-1)
+	await frames(15)
+	require(ship.rotation.y>.15 and ship.visual.rotation.z>.1,"Either stick left turns and banks left")
+	reset()
+	axis(JOY_AXIS_LEFT_X,-1)
+	axis(JOY_AXIS_RIGHT_X,-1)
+	await frames(15)
+	require(ship.rotation.y>.4,"Both left turns stronger left")
+	reset()
+	axis(JOY_AXIS_LEFT_X,-1)
+	axis(JOY_AXIS_RIGHT_X,1)
+	await frames(15)
+	require(ship.rotation.is_zero_approx() and absf(ship.visual.rotation.z)<.001,"Opposite horizontal inputs cancel")
+	reset()
+	axis(JOY_AXIS_LEFT_X,.5)
+	await frames(15)
+	require(absf(ship.rotation.y)>0 and absf(ship.rotation.y)<single_yaw*.6,"Analog steering magnitude")
+	# Coast while lining up: heading turns, velocity direction does not.
+	reset()
+	ship.velocity = Vector3(0,0,-52)
+	axis(JOY_AXIS_LEFT_X,1)
+	axis(JOY_AXIS_RIGHT_X,1)
+	await frames(30)
+	var coast := horizontal()
+	require(ship.rotation.y<-.8 and coast.normalized().dot(Vector3.FORWARD)>.999,"Off-gas facing independent of travel")
+	require(coast.length()>44 and coast.length()<47,"Passive slowing remains useful while steering")
+	axis(JOY_AXIS_LEFT_X,0)
+	axis(JOY_AXIS_RIGHT_X,0)
+	var heading: Vector3 = -ship.global_transform.basis.z
+	var before: float = absf(coast.normalized().signed_angle_to(heading,Vector3.UP))
+	axis(JOY_AXIS_TRIGGER_RIGHT,1)
+	await frames(12)
+	require(absf(horizontal().normalized().signed_angle_to(heading,Vector3.UP))<before*.5,"RT lurch/assist pulls into new heading")
+	require(horizontal().length()>40 and horizontal().length()<=52.01,"Strong capped rethrust")
+	reset()
+	ship.velocity = Vector3(0,0,-52)
+	axis(JOY_AXIS_TRIGGER_LEFT,.5)
+	await frames(15)
+	var partial_brake: float = horizontal().length()
+	require(partial_brake<44 and partial_brake>35,"Analog air brake")
+	reset()
+	ship.velocity = Vector3(0,0,-52)
+	axis(JOY_AXIS_TRIGGER_LEFT,1)
+	await frames(45)
+	require(horizontal().is_zero_approx(),"Full air brake should stop in under a second")
+	axis(JOY_AXIS_TRIGGER_RIGHT,1)
+	await frames(10)
+	require(horizontal().is_zero_approx(),"Full brake overrides simultaneous gas")
+	reset()
+	key(KEY_W,true)
+	key(KEY_D,true)
+	await frames(10)
+	require(ship.velocity.length()>15 and ship.rotation.y<0,"Keyboard W + D thrust and steer")
+	var one: float = absf(ship.rotation.y)
+	key(KEY_RIGHT,true)
+	await frames(10)
+	require(absf(ship.rotation.y)>one*2.8,"Keyboard steering sets add")
+	key(KEY_W,false)
+	key(KEY_D,false)
+	key(KEY_RIGHT,false)
+	key(KEY_S,true)
+	await frames(45)
+	require(horizontal().is_zero_approx(),"Keyboard S air brake")
+	key(KEY_S,false)
+	var course = load("res://TestTrack.tscn").instantiate()
+	scene.add_child(course)
+	var button := InputEventJoypadButton.new()
+	button.device = 0
+	button.button_index = JOY_BUTTON_Y
+	button.pressed = true
+	Input.parse_input_event(button)
+	Input.flush_buffered_events()
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)) and ship.velocity.is_zero_approx(),"Y reset")
+	button.pressed = false
+	Input.parse_input_event(button)
+	ship.position.z = 10
+	key(KEY_R,true)
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)),"R reset")
+	key(KEY_R,false)
+	require(ship.camera.rotation.is_equal_approx(camera_rotation) and ship.get_node("CollisionShape3D").transform.is_equal_approx(collision_rest),"Stable camera rotation/collider")
+	require(not ship.engine_audio[0].playing and not ship.engine_audio[1].playing,"Engine sound remains disabled")
+	print("Trigger/steering: one vs both yaw, signs/cancellation, analog/noise, no vertical aiming, glide/heading separation, rethrust, air brakes, cap, keyboard/reset; failures=",failures)
+	scene.queue_free()
+	await process_frame
+	OS.delay_msec(120)
+	await process_frame
+	quit(0 if failures==0 else 1)

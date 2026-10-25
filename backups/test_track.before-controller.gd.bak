@@ -1,0 +1,34 @@
+extends Node3D
+
+var ship: CharacterBody3D
+var readout: Label
+
+func _ready() -> void:
+	ship = get_parent().get_node("SHIP") as CharacterBody3D
+	var environment := WorldEnvironment.new()
+	var settings := Environment.new()
+	settings.background_mode = Environment.BG_COLOR
+	settings.background_color = Color(0.055, 0.09, 0.15)
+	settings.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	settings.ambient_light_color = Color(0.65, 0.78, 1.0)
+	settings.ambient_light_energy = 0.65
+	environment.environment = settings
+	add_child(environment)
+	var overlay := CanvasLayer.new()
+	add_child(overlay)
+	readout = Label.new()
+	readout.position = Vector2(24, 20)
+	readout.add_theme_font_size_override("font_size", 20)
+	readout.add_theme_color_override("font_shadow_color", Color.BLACK)
+	readout.add_theme_constant_override("shadow_offset_x", 2)
+	readout.add_theme_constant_override("shadow_offset_y", 2)
+	overlay.add_child(readout)
+
+func _process(_delta: float) -> void:
+	readout.text = "HOVER RACER  /  TEST CIRCUIT\nArrow keys: thrust / brake / steer   |   R: reset\nSpeed: %02d m/s" % roundi(ship.velocity.length())
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
+		ship.position = Vector3(55, 2, 30)
+		ship.rotation = Vector3.ZERO
+		ship.velocity = Vector3.ZERO

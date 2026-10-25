@@ -1,0 +1,844 @@
+# HOVER RACER — CODEX IMPLEMENTATION PLAN
+
+**Project:** Hover Racer Web  
+**Target:** HTML5, JavaScript, Three.js  
+**Reference:** Original Godot 4.7 project in `Video Game.zip`  
+**Objective:** Faithfully port the existing 3D hover-racing prototype to the browser.
+
+## 1. Agent Role and Operating Instructions
+
+You are the lead gameplay and graphics engineer responsible for recreating Hover Racer using Three.js.
+
+Your priority is **behavioural fidelity to the original Godot project**, not creating a new racing game.
+
+You must:
+
+1. Inspect the original project before implementing each subsystem.
+2. Treat the current Godot scripts and scenes as authoritative.
+3. Preserve original physics values, input processing, track geometry, camera behaviour, and vehicle design.
+4. Implement the project incrementally in independently testable modules.
+5. Keep all gameplay tuning values centralized.
+6. Use deterministic fixed-timestep gameplay updates.
+7. Write automated tests for numerical behaviour.
+8. Maintain a runnable browser build throughout development.
+9. Avoid adding new gameplay features without explicit authorization.
+10. Document unavoidable differences between Godot and browser behaviour.
+
+Do not substitute generic arcade-racing physics for the original implementation.
+
+Do not silently alter speed, turning, acceleration, braking, road dimensions, or camera behaviour to make the game easier.
+
+When source files are ambiguous, document the uncertainty and favour the implementation matching the original game.
+
+## 2. Source-of-Truth Files
+
+Extract the original ZIP into a reference directory outside the web application's production source.
+
+Inspect these files:
+
+| Source file | Responsibility |
+|---|---|
+| `ship.gd` | Physics, suspension, steering, visual dynamics, camera, audio |
+| `pod_visual.gd` | Procedural vehicle geometry and exhaust effects |
+| `test_track.gd` | Original HUD and controller status |
+| `tools/build_course.gd` | Track geometry, elevation, barriers and decorations |
+| `tools/course_samples.json` | Original track centreline samples |
+| `tools/build_canyon.gd` | Canyon environment generation |
+| `TestTrack.tscn` | Saved track and geometry |
+| `CanyonSlice.tscn` | Saved canyon environment |
+| `Main.tscn` | Scene hierarchy, spawning, camera and collision dimensions |
+| `project.godot` | Original input mappings |
+| `TESTING.md` | Gameplay acceptance and regression tests |
+| `tests/*.gd` | Original numerical test cases |
+| `audio/*.wav` | Original audio assets |
+
+The web application must not require Godot at runtime.
+
+Create `docs/source-parity.md` to track every ported behaviour, its original source, implementation location, and validation status.
+
+## 3. Technology Decisions
+
+Use:
+
+- Three.js for rendering, mesh generation, transforms and raycasting.
+- JavaScript ES modules.
+- Vite for local development and production builds.
+- Vitest for unit and deterministic simulation tests.
+- Playwright for browser-level smoke tests.
+- Web Gamepad API for controller input.
+- Web Audio API for sound playback.
+
+For vehicle motion, implement the original kinematic model directly rather than replacing it with a generic rigid-body vehicle system.
+
+Use mesh collision/raycasting with a kinematic collision solver to reproduce the original `CharacterBody3D` movement. A lightweight physics library may be introduced for collision queries if needed, but it must not change the vehicle's motion equations.
+
+World coordinate conventions:
+
+- X: horizontal world axis.
+- Y: vertical/up.
+- Z: horizontal world axis.
+- Forward: local negative Z.
+- Units: metres.
+- Simulation: 60 Hz fixed timestep.
+
+## 4. Target Repository Structure
+
+```text
+hover-racer-web/
+├── index.html
+├── package.json
+├── vite.config.js
+├── public/
+│   └── audio/
+│       ├── wind.wav
+│       └── engine.wav
+├── src/
+│   ├── main.js
+│   ├── Game.js
+│   ├── config/
+│   │   └── tuning.js
+│   ├── core/
+│   │   ├── FixedStepLoop.js
+│   │   ├── GameState.js
+│   │   └── math.js
+│   ├── input/
+│   │   ├── InputManager.js
+│   │   ├── KeyboardInput.js
+│   │   └── GamepadInput.js
+│   ├── physics/
+│   │   ├── HoverPhysics.js
+│   │   ├── RoadSampler.js
+│   │   └── CollisionSolver.js
+│   ├── vehicles/
+│   │   ├── HoverRacer.js
+│   │   ├── VehicleVisual.js
+│   │   └── ExhaustEffects.js
+│   ├── world/
+│   │   ├── TrackBuilder.js
+│   │   ├── CanyonBuilder.js
+│   │   └── TrackDecorations.js
+│   ├── camera/
+│   │   └── ChaseCamera.js
+│   ├── audio/
+│   │   └── AudioManager.js
+│   ├── ui/
+│   │   └── HUD.js
+│   └── data/
+│       └── courseSamples.json
+├── tests/
+│   ├── steering.test.js
+│   ├── propulsion.test.js
+│   ├── suspension.test.js
+│   ├── collision.test.js
+│   └── game.spec.js
+└── docs/
+    ├── source-parity.md
+    ├── architecture.md
+    └── known-differences.md
+```
+
+Keep source porting, rendering, input interpretation and physics simulation separate.
+
+## 5. Implementation Phases
+
+### Phase 1 — Project Bootstrap
+
+Tasks:
+
+1. Initialize Vite with JavaScript.
+2. Install Three.js, Vitest and Playwright.
+3. Create the rendering canvas.
+4. Configure resize handling and device pixel ratio.
+5. Add a perspective camera, ambient lighting and directional lighting.
+6. Create a fixed-timestep accumulator.
+7. Add basic error reporting and development diagnostics.
+8. Add `npm run dev`, `npm run build`, `npm run test` and `npm run test:e2e`.
+
+Fixed update loop:
+
+```js
+const STEP = 1 / 60;
+let accumulator = 0;
+let previousTime = 0;
+
+function frame(timestamp) {
+  if (previousTime === 0) previousTime = timestamp;
+
+  const elapsed = Math.min(
+    (timestamp - previousTime) / 1000,
+    0.25
+  );
+  previousTime = timestamp;
+
+  accumulator += elapsed;
+
+  input.poll();
+
+  while (accumulator >= STEP) {
+    game.fixedUpdate(STEP);
+    accumulator -= STEP;
+  }
+
+  game.renderUpdate(accumulator / STEP);
+  renderer.render(scene, camera);
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+```
+
+Maintain separate simulation transforms and rendered transforms to interpolate smoothly. Avoid interpolating across resets or teleports.
+
+**Completion criteria:** The browser application loads, renders a scene, runs a stable fixed timestep and builds without errors.
+
+### Phase 2 — Vehicle Movement and Physics
+
+Implement all numeric defaults from `ship.gd`.
+
+```js
+export const TUNING = {
+  maxSpeed: 104,
+  acceleration: 300,
+  coastDeceleration: 26,
+  turnSpeed: 1.8,
+  thrustGrip: 6.5,
+  bankDegrees: 36,
+  downTurnBoost: 3,
+  downBankDegrees: 18,
+  maxBankDegrees: 50,
+  downPitchDegrees: 3,
+  powerPitchDegrees: 6,
+  braking: 100,
+  triggerDeadzone: 0.06,
+  stickDeadzone: 0.18,
+  hoverHeight: 1.5,
+  hoverResponse: 40,
+  maxHoverVerticalSpeed: 65,
+  hoverAmplitude: 0.10,
+  cameraPullback: 1.1,
+  cameraKickPullback: 0.4,
+  poweredFov: 6,
+  speedFov: 4,
+  kickFov: 2
+};
+```
+
+Use `ship.gd` as the exact reference for the order of operations.
+
+#### 2.1 Trigger normalization
+
+```js
+function normalizeTrigger(raw) {
+  const d = TUNING.triggerDeadzone;
+  if (raw <= d) return 0;
+  return (raw - d) / (1 - d);
+}
+```
+
+#### 2.2 Stick normalization
+
+Construct each 2D stick vector from its horizontal and vertical action strengths.
+
+Clamp its length to 1, then apply a radial deadzone:
+
+```js
+function normalizeStick(x, y) {
+  const magnitude = Math.min(Math.hypot(x, y), 1);
+  const d = TUNING.stickDeadzone;
+
+  if (magnitude <= d) return { x: 0, y: 0 };
+
+  const scale =
+    ((magnitude - d) / (1 - d)) /
+    Math.hypot(x, y);
+
+  return { x: x * scale, y: y * scale };
+}
+```
+
+This must happen before combining left and right steering.
+
+#### 2.3 Steering model
+
+```js
+const steering = clamp(
+  (leftStick.x + rightStick.x) * 0.5,
+  -1,
+  1
+);
+```
+
+Only the inside stick's downward input increases turning strength.
+
+```js
+let pullAmount = 0;
+
+if (steering < 0) {
+  pullAmount = Math.max(leftStick.y, 0);
+} else if (steering > 0) {
+  pullAmount = Math.max(rightStick.y, 0);
+}
+
+pullAmount *= smoothstep(0, 0.35, Math.abs(steering));
+
+const yawRate =
+  -steering * TUNING.turnSpeed
+  - Math.sign(steering)
+    * pullAmount
+    * TUNING.downTurnBoost;
+```
+
+Apply yaw rotation before propulsion.
+
+Positive steering must turn the craft right, matching the original coordinate and rotation convention.
+
+Opposing stick inputs must cancel exactly.
+
+#### 2.4 Propulsion
+
+Brake reduces effective propulsion:
+
+```js
+const propulsion = throttle * (1 - brake);
+```
+
+When propulsion is active:
+
+1. Determine the craft's world-space forward vector.
+2. Add acceleration along forward.
+3. Decompose horizontal velocity into forward and lateral components.
+4. Apply exponential lateral grip.
+5. Clamp horizontal velocity to maximum speed.
+
+Reference equations:
+
+```js
+velocity += forward * acceleration * propulsion * dt;
+
+along = forward * dot(velocity, forward);
+sideways = velocity - along;
+
+velocity =
+  along +
+  sideways * exp(-thrustGrip * propulsion * dt);
+
+velocity = clampMagnitude(velocity, maxSpeed);
+```
+
+When propulsion is inactive:
+
+```js
+velocity = moveTowardVector(
+  velocity,
+  ZERO,
+  coastDeceleration * dt
+);
+```
+
+Apply braking afterward:
+
+```js
+velocity = moveTowardVector(
+  velocity,
+  ZERO,
+  braking * brake * dt
+);
+```
+
+Preserve momentum independently of facing direction. Releasing throttle must not force the craft to travel in the direction it is pointing.
+
+#### 2.5 Suspension and gravity
+
+Look one physics step ahead using the horizontal velocity.
+
+Sample the road below:
+
+```js
+const samplePoint = position.clone()
+  .addScaledVector(horizontalVelocity, dt);
+```
+
+From the source implementation:
+
+- Ray begins 8 metres above the sample point.
+- Ray ends 40 metres below it.
+- Test the exact point first.
+- If necessary, try four offsets of 0.04 m along ±X and ±Z.
+- Only accept road collision surfaces, not barriers.
+
+On road detection:
+
+```js
+targetY = hit.point.y + hoverHeight;
+
+verticalVelocity = clamp(
+  (targetY - position.y) * hoverResponse,
+  -maxHoverVerticalSpeed,
+  maxHoverVerticalSpeed
+);
+```
+
+Without road detection:
+
+```js
+verticalVelocity -= 25 * dt;
+```
+
+Road normals drive visual slope orientation but must not directly modify horizontal propulsion or grip.
+
+Implement collision-aware movement with sliding along road and barrier geometry. Avoid tunnelling at high speeds.
+
+#### 2.6 Recovery
+
+When the ship falls below `Y = -30`, reset to:
+
+```js
+position = [55, 2, 30];
+rotation = [0, 0, 0];
+velocity = [0, 0, 0];
+```
+
+Reset camera, vehicle visual state, hover animation phase, input-dependent visual effects and audio states.
+
+**Completion criteria:** Vehicle acceleration, steering, momentum, braking, suspension and recovery match source-equivalent numerical tests.
+
+### Phase 3 — Input System
+
+Implement keyboard and standard-layout gamepad support.
+
+| Action | Keyboard | Gamepad |
+|---|---|---|
+| Throttle | W | Right trigger |
+| Air brake | S | Left trigger |
+| Left stick steer | A / D | Left stick X |
+| Right stick steer | Left / Right arrows | Right stick X |
+| Sharp left turn | Q | Left stick down |
+| Sharp right turn | E | Right stick down |
+| Reset | R | Y / Triangle-equivalent position |
+
+Use `navigator.getGamepads()` for gamepads.
+
+For standard gamepads, use:
+
+- Left stick X/Y: axes 0/1.
+- Right stick X/Y: axes 2/3.
+- Left trigger: button 6 analog value.
+- Right trigger: button 7 analog value.
+- Y button: button 3.
+
+Do not interpret axes 4/5 as standard browser trigger inputs simply because those axes are used in the Godot mapping.
+
+Keyboard presses use binary action strengths before the same deadzone normalization applied to controller input. Map Q/E into the respective downward stick components.
+
+Features:
+
+- Controller connect/disconnect detection.
+- Keyboard fallback.
+- Clear input states when the browser loses focus.
+- Prevent page scrolling from gameplay keys.
+- Poll once per rendered frame and use the latest snapshot for fixed updates.
+
+**Completion criteria:** Both input types work, triggers provide analog input, dual-stick steering behaves correctly, and controller disconnects do not cause stuck inputs.
+
+### Phase 4 — Track and World Geometry
+
+Port `tools/build_course.gd` rather than designing a replacement track.
+
+Authoritative values:
+
+- Track width: 28 metres.
+- Corner radius: 28 metres.
+- Road centre elevation offset: 0.5 metres.
+- Barrier height: 3 metres.
+- Barrier thickness: 1.4 metres.
+- Original corner and path definitions must be retained.
+
+Reference corner points:
+
+```js
+const corners = [
+  [55, 0, 140],
+  [55, 0, -150],
+  [-45, 0, -150],
+  [-45, 0, -75],
+  [-150, 0, -75],
+  [-150, 0, 140]
+];
+```
+
+Generate rounded transitions using 40 subdivisions per corner. Straight sections are subdivided at roughly two-metre intervals.
+
+Use the original `course_samples.json` as a geometry parity reference.
+
+Elevation functions:
+
+```js
+function elevation(x, z) {
+  if (x > 30 && z > -110 && z < -10) {
+    return 10 * Math.sin(
+      Math.PI * (z + 110) / 100
+    ) ** 2;
+  }
+
+  if (x < -120 && z > -30 && z < 110) {
+    return 14 * Math.sin(
+      Math.PI * (z + 30) / 140
+    ) ** 2;
+  }
+
+  return 0;
+}
+```
+
+Construct indexed or non-indexed `BufferGeometry` for the road surface with correct winding and upward-facing normals.
+
+Build continuous, collision-capable side barriers with the same dimensions and locations as Godot.
+
+Port road markings, edge markers, centre dashes and decorative structures from the source generator.
+
+Use the exact saved scenes or generator code to determine material colours, geometry density and decoration placement. Do not use invented assets as substitutes for authoritative geometry.
+
+### Phase 5 — Canyon Environment
+
+Translate `build_canyon.gd` and `CanyonSlice.tscn` into a procedural or pre-exported Three.js scene.
+
+Requirements:
+
+- Preserve the canyon's scale and placement.
+- Preserve rock formations and track clearance.
+- Match the original low-poly geometry style.
+- Reproduce relevant material colours.
+- Add appropriate shadows and lighting.
+- Separate collidable geometry from purely decorative meshes.
+- Prefer batched or instanced geometry for repeated objects.
+
+Environment defaults from `test_track.gd`:
+
+- Background colour: RGB approximately `(0.055, 0.09, 0.15)`.
+- Ambient light colour: `(0.65, 0.78, 1.0)`.
+- Ambient energy reference: `0.65`.
+
+Convert Godot lighting to visually comparable Three.js results; lighting energy values are not necessarily numerically transferable.
+
+**Completion criteria:** Track layout, elevation, canyon composition, barriers and decorations are visually and spatially consistent with the source.
+
+### Phase 6 — Vehicle Model and Visual Effects
+
+Port the procedural model defined in `pod_visual.gd`.
+
+Do not replace it with a downloaded vehicle model.
+
+Build the original hierarchy using Three.js meshes and groups:
+
+- Two cylindrical gold engine pods.
+- Blue engine collars and body stripes.
+- Dark front intakes.
+- Rotating intake blades.
+- Rear cockpit and canopy.
+- Tail fin.
+- Control tethers and energy links.
+- Cyan emissive exhaust plumes.
+
+Preserve source dimensions and relative placements.
+
+Vehicle collision dimensions from `Main.tscn`:
+
+```js
+const collisionSize = [3.1, 0.4, 4.6];
+```
+
+The base visual mesh is replaced at runtime by the procedural model.
+
+#### Visual dynamics
+
+Implement source-equivalent presentation behaviour:
+
+- Vehicle banking.
+- Down-turn banking boost.
+- Visual stern swing.
+- Road slope pitch.
+- Power-dependent pitch.
+- Hover bob.
+- Off-throttle rhythmic skipping.
+- Smooth engine exhaust intensity.
+- Turbine rotation.
+
+Important formulas:
+
+```js
+bank = clamp(
+  -steering * 36 +
+  sign(yawRate) * pullAmount * 18,
+  -50,
+  50
+);
+```
+
+```js
+sternSwing = clamp(
+  yawRate * 0.13 *
+  (1 + Math.abs(steering) * 0.4),
+  -0.30,
+  0.30
+);
+
+sternSwing *= 1 - powerBlend * 0.35;
+```
+
+```js
+skip =
+  Math.max(Math.sin(hoverTime * 7.5), 0) ** 2 *
+  0.18 *
+  movement *
+  (1 - powerBlend);
+```
+
+```js
+bob =
+  Math.sin(hoverTime * 4.2) *
+  hoverAmplitude *
+  (0.3 + movement * 0.25);
+```
+
+Use exponential smoothing from the Godot implementation rather than arbitrary frame-based interpolation.
+
+Implement intake rotation and exhaust animation based on `pod_visual.gd`.
+
+Exhaust must not appear when thrust intensity is below the source threshold.
+
+### Phase 7 — Chase Camera
+
+Preserve the original relative camera transform:
+
+- Local position: `(0, 4.6, 10)`.
+- Pitch: approximately 15 degrees downward.
+- Base FOV: use Godot's effective scene/default FOV, verified before implementation.
+- Camera follows the vehicle transform.
+- No artificial camera shake or roll.
+- No camera bob.
+
+Compute target pullback:
+
+```js
+const pullback =
+  powerBlend * 1.1 +
+  throttleKick * 0.4;
+```
+
+Compute FOV target:
+
+```js
+const targetFov =
+  baseFov +
+  movement * 4 +
+  powerBlend * 6 +
+  throttleKick * 2;
+```
+
+Use the original smooth decay factors:
+
+- Pullback smoothing: `1 - exp(-8 * dt)`.
+- FOV smoothing: `1 - exp(-7 * dt)`.
+- Power blend smoothing: `1 - exp(-18 * dt)`.
+
+Implement throttle-onset kick, bounded at 1 and decaying exponentially, as in `ship.gd`.
+
+Three.js camera's FOV is measured vertically in degrees; preserve the equivalent Godot projection and aspect behaviour.
+
+**Completion criteria:** Camera is stable, attached to the ship, and smoothly adjusts distance and FOV according to propulsion and speed.
+
+### Phase 8 — Sound System
+
+Use the original WAV files.
+
+Sound behaviour must match `ship.gd`:
+
+- Engine sounds are intentionally disabled.
+- Wind begins only above the original minimum speed-ratio threshold of `0.035`.
+- Wind volume increases with speed.
+- Wind pitch rises with speed.
+
+Wind reference values:
+
+```js
+const volumeDb =
+  -48 + 23 * Math.pow(speedRatio, 0.65);
+
+const pitch =
+  0.7 + speedRatio * 0.65;
+```
+
+Convert decibels to linear gain:
+
+```js
+gain = Math.pow(10, volumeDb / 20);
+```
+
+Use a looping Web Audio source and update playback rate and gain from the current movement state.
+
+Respect browser audio autoplay restrictions: initialize or resume audio after a user gesture.
+
+### Phase 9 — HUD and Interaction
+
+Recreate the original diagnostic HUD before considering a new interface.
+
+Display:
+
+- HOVER RACER / CANYON RUN.
+- Controller connection status.
+- Throttle percentage.
+- Brake percentage.
+- Speed in metres per second.
+- Controller instructions.
+- Keyboard instructions.
+- Reset instructions.
+
+Original text placement begins near `(24, 20)` with approximately 17 px text.
+
+Use HTML/CSS overlays rather than drawing HUD text into the 3D scene.
+
+Ensure HUD readability at 1080p and 4K, with sensible scaling on smaller browser windows.
+
+Do not add menus, lap counters, leaderboards, opponents, missions, upgrades or an artificial race timer during the initial faithful port.
+
+### Phase 10 — Testing and Original-Game Parity
+
+Port the intent and assertions of the original Godot tests:
+
+- `neutral_coast.gd`
+- `hill_course.gd`
+- `controller_input.gd`
+- Remaining tests in `tests/`, including power/visual contrast tests.
+
+Minimum automated scenarios:
+
+| Test | Expected result |
+|---|---|
+| Full throttle from rest | Rapid acceleration, capped at 104 m/s |
+| Release throttle at 104 m/s | Approximately 4 seconds to rest on level unobstructed ground |
+| Full brake at 104 m/s, throttle released | Approximately 1.04 seconds to stop |
+| Opposite equal stick inputs | Zero steering yaw |
+| Both sticks steer same direction | Full base steering contribution |
+| Inside stick pulled down | Increased yaw rate |
+| Outside stick pulled down | No sharp-turn boost |
+| Pull down with no steering | No rotation |
+| Full brake and throttle simultaneously | No propulsion, brake deceleration applied |
+| Steering off throttle | Velocity direction preserved except for collisions |
+| Drive over hills | Hover follows track elevation |
+| Cross road triangle seams | No suspension jitter |
+| Drive against barriers | Vehicle cannot pass through barriers |
+| Fall below Y = -30 | Reset to original spawn |
+| Release input/controller disconnect | No stuck controls |
+| Low speed | Wind audio stops below threshold |
+| Engine audio | Remains disabled |
+
+Numerical acceptance tolerances should be derived from the original Godot tests where available. Use fixed-step input replay and compare positions, velocities and orientations at identical simulation ticks.
+
+Physics parity must be verified without camera or rendering dependencies.
+
+For collision-related tests, allow documented tolerances where the Godot and browser collision solvers have unavoidable differences.
+
+### Phase 11 — Performance and Browser Compatibility
+
+Target:
+
+- Desktop Chrome and Edge.
+- Firefox and Safari where practical.
+- Keyboard and standard gamepad operation.
+- 60 FPS on a reasonably capable desktop GPU at 1080p.
+- Correct rendering at 4K, with adaptive internal rendering resolution if required.
+
+Implement:
+
+- Efficient geometry batching.
+- Instanced repeated decorative objects.
+- Reusable vectors and temporary math objects.
+- Limited raycasting and collision queries.
+- Proper Three.js resource disposal.
+- Resize handling.
+- WebGL capability and failure messaging.
+- Production build validation.
+
+Avoid excessive garbage allocations inside the fixed update loop.
+
+## 6. Exact Development Order
+
+Follow this sequence. Do not skip ahead to cosmetic features before physics is correct.
+
+1. Extract and audit Godot project.
+2. Create source-parity checklist.
+3. Bootstrap Vite/Three.js/testing.
+4. Implement fixed simulation and input snapshots.
+5. Implement steering and propulsion with unit tests.
+6. Port original road geometry.
+7. Implement suspension, collisions and recovery.
+8. Implement complete procedural vehicle visuals.
+9. Implement chase camera and visual animations.
+10. Port canyon and track decorations.
+11. Implement original audio.
+12. Implement HUD and gamepad status.
+13. Port and execute original test scenarios.
+14. Run browser smoke tests.
+15. Optimize rendering and verify production build.
+16. Update documentation and deliver the playable recreation.
+
+At the end of every phase, verify the build still runs.
+
+## 7. Codex Execution Rules
+
+For each phase:
+
+1. Read relevant original code.
+2. Identify exact source behaviour.
+3. Implement the minimal complete subsystem.
+4. Add or update tests.
+5. Run tests and a production build.
+6. Fix failures.
+7. Update source-parity documentation.
+8. Summarize the changes, verification and unresolved differences.
+
+Never claim a test passed unless it was actually executed.
+
+If a required source file is unavailable, clearly identify the missing reference and implement only what can be supported by existing source evidence.
+
+Avoid large speculative rewrites.
+
+Prefer small cohesive commits or checkpoints where version control is available.
+
+## 8. Definition of Done
+
+The project is complete when:
+
+- The browser loads the original track and canyon.
+- The original hover racer is visually recognizable.
+- The craft drives with the same two-stick steering mechanics.
+- Acceleration, braking, coasting and grip match the original formulas.
+- Suspension reliably follows elevated sections.
+- Barriers prevent escape through the road edges.
+- Camera pullback, FOV, banking and animation are reproduced.
+- Keyboard and gamepad controls function.
+- Wind audio responds correctly to vehicle speed.
+- The original HUD is functional.
+- Reset restores a clean initial state.
+- Automated physics and browser tests pass.
+- The production build runs without Godot or its editor.
+- `docs/known-differences.md` identifies any remaining deviations.
+
+**Final delivery:** A playable local web application, complete source repository, passing test suite, build instructions and source-parity report.
+
+---
+
+## 9. First Codex Instruction
+
+Begin with Phase 1.
+
+Inspect the supplied Godot project and establish the implementation repository. Read the original physics, input, course-building and testing scripts before creating systems.
+
+Create the complete Vite/Three.js project foundation and source-parity checklist. Implement a fixed 60 Hz simulation loop and an initial empty scene with camera and lighting.
+
+Then proceed directly to the vehicle input and physics modules, using the original formulas and numerical defaults.
+
+Implement and run tests whenever the execution environment permits. Work sequentially through the plan, maintaining a working application and correcting errors before proceeding.
+
+Preserve fidelity to the original Hover Racer prototype above all else.

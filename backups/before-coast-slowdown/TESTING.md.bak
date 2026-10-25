@@ -1,0 +1,42 @@
+# Hover Racer directional thrusters
+
+Reopen the project after input-map changes, then run Main with F6. Preserve any unsaved editor work separately before reloading external edits.
+
+Both sticks point the ship toward the requested direction across the full circle, then drive it forward along its heading. Up means ahead; left/right means turn the nose left/right and travel that way; down means turn around and travel behind. Down no longer means nose-fixed reverse. Magnitude controls thrust with a radial deadzone of 0.18. Trigger propulsion and the previous small horizontal steering assist are removed.
+
+The heading reference is captured from the ship/follow camera when a gesture begins. It stays fixed while either stick remains deflected: holding left reaches a leftward heading and stays there, even as the camera follows the turn. Centre BOTH sticks to coast and refresh the reference; the next up gesture means forward from the new facing. Moving a held stick around its circle updates the target within that fixed frame.
+
+The two independent stick vectors blend to a target direction. One active stick supplies half the combined propulsion. Near-opposite inputs blend into differential turning instead of following an unstable near-zero target: left up/right down spins right, inverse spins left. Equal opposed horizontal inputs cancel. Neutral cuts powered turning/thrust and preserves drifting momentum. Powered grip redirects movement toward the nose. Bank, stern swing and skipping remain visual only.
+
+Keyboard equivalents: WASD is the left stick; arrow keys are the right stick. A+Left commands left; D+Right commands right; W+Up drives ahead; S+Down turns around and drives behind. W+Down spins right; S+Up spins left. Y/R resets. Individual exhaust indicates each engine's strength; cyan rear exhaust is forward drive, orange front exhaust shows opposed counter-thrust.
+
+The saved course remains approximately 918 metres long and 28 metres wide, with six rounded corners, a dogleg, and hills rising 10 and 14 metres. Hover suspension samples actual road collisions, with tiny fallback samples for triangle-edge ray misses. Falling off the course resets the ship.
+
+Tunable Ship exports: top speed 52 m/s, acceleration 145 m/s², bounded turn speed 1.8 rad/s, heading response 6, bank up to 36 degrees, thrust grip 6.5, hover response 22. Speed and acceleration increased from 40 and 110. FOV changes smoothly by at most 8 degrees; mesh animation does not tilt/bob the camera or collider.
+
+Run the checks from this project directory:
+
+```
+Godot --headless --fixed-fps 60 --path . --script res://tests/controller_input.gd
+Godot --headless --fixed-fps 60 --path . --script res://tests/hill_course.gd
+```
+
+The control test uses simulated controller events and checks actual facing and travel on a large isolated collision floor. It covers held directions, direction changes without recentering, reference refresh, mixed/opposed vectors, radial analog response, coast, keyboard, reset and cap. The hill test checks the actual course, barriers and full-speed hill following. Neither judges physical controller feel or visual comfort.
+
+`tools/build_course.gd` regenerates TestTrack.tscn and course_samples.json, replacing manual course edits. Back up before running it. Files before this control update are preserved in `backups/before-full-circle-heading` with `.bak` suffixes.
+
+## Canyon and twin-engine ship
+
+The original low-poly ship now has separated gold/blue engine pods, a small trailing cockpit, tethers, an energy linkage, independent rotating intake blades and stronger exhaust. Its collision box is 3.1 × 0.4 × 4.6 metres. The chase camera is higher/farther back to frame the whole ship; thrust adds a smooth pullback of at most 0.55 metres and returns on release. FOV remains capped at the existing additional 8 degrees, with no camera shake, roll or bob.
+
+CanyonSlice.tscn is independent scenery on the east straight: close faceted cliffs, repeated lit posts, ground rocks and three overhead arches, ending before the corner approach. All geometry is original and local; `tools/build_canyon.gd` regenerates only the scenery. The existing course generator remains unchanged.
+
+Original synthesized engine and wind WAV loops are in `audio/`. Each engine has independent activity and pitch; wind follows actual horizontal speed and continues during coasting. Reset stops all audio and restores the camera. Tune volume in `ship.gd` if needed; physical loudness and comfort need an in-game check.
+
+Additional automated validation:
+
+```
+Godot --headless --fixed-fps 60 --path . --script res://tests/canyon_podracer.gd
+```
+
+Pre-update files are in `backups/before-canyon-podracer` with `.bak` suffixes. Full-circle controls, 52 m/s speed cap and 145 m/s² acceleration are unchanged.

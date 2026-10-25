@@ -1,0 +1,36 @@
+FOR BLAKE - HOVER RACER
+
+QUICK START: Extract this ZIP and open PLAY GAME.html in a browser supporting
+WebGL 2. Everything is inline. No downloads or Godot runtime are needed.
+Click the game or press a driving key to enable wind audio.
+Controller button opens connection and live input testing. Connect by USB or
+pair in system Bluetooth, then press a controller button for browser detection.
+W/S throttle/brake; A/D and arrows steer; Q/E sharp turns; R reset.
+Controller: RT gas, LT brake, both sticks steer, inside stick down sharpens turns.
+
+CONTENTS
+PLAY GAME.html: last tested canyon build; its 20 embedded regression tests passed.
+Godot original/: original editable project, scripts, scenes, tests, audio, previews
+and backups. Generated .godot editor/import caches are omitted.
+Original upload/Video Game.zip: unchanged original Godot upload.
+Project code/: current HTML snapshot, desktop wrapper, build scripts and lockfile.
+Windows portable/: existing Windows executable and runtime license notices.
+Prompts/: human-authored generation prompts and complete original plan.
+References/: supplied spacecraft reference image.
+MANIFEST.json: checksums of packaged files.
+
+STATUS
+The newer Project code/index.html is an INTERRUPTED, UNFINISHED development
+snapshot. The reference-inspired ship and open banked track are partly implemented;
+the space background, revised tests and jump/landing validation are incomplete.
+It is included to preserve all current work, not as a finished replacement.
+Use PLAY GAME.html for the last tested game.
+The Windows executable predates those unfinished changes and was not rebuilt here.
+
+EDITING
+Import Godot original/hover-racer/project.godot in the compatible Godot editor.
+The supplied plan targets Godot 4.7; project files remain authoritative.
+The browser HTML has no build step. Optional local serving: python -m http.server 8080
+See Project code/README.md for the existing Electron/Windows build instructions.
+The build scripts download dependencies; node_modules and tool caches are omitted.
+Git history, personal machine configuration and unrelated soundboard files are omitted.

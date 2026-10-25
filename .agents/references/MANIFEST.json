@@ -1,0 +1,732 @@
+[
+  {
+    "path": "READ ME FIRST.txt",
+    "bytes": 2128,
+    "sha256": "40f783f43dadd991acac95c579721aa59342eefb2c698a748fb6b32311c96356"
+  },
+  {
+    "path": "Prompts/PROMPTS USED.txt",
+    "bytes": 1524,
+    "sha256": "a323132e13bb9c9e47e4334b103b4e74f308d3830fc5caa64abf3afc01f6d9f1"
+  },
+  {
+    "path": "Prompts/ORIGINAL IMPLEMENTATION PLAN.txt",
+    "bytes": 25659,
+    "sha256": "d2b8ab8237f6d93c3530cc4b960bab7cdf665f24b56299093572efb922d60982"
+  },
+  {
+    "path": "PLAY GAME.html",
+    "bytes": 385743,
+    "sha256": "88062c7f3fd339b45715642cdcd2b4e50ce9fbf463b65fb947d09bb9f2941b84"
+  },
+  {
+    "path": "Original upload/Video Game.zip",
+    "bytes": 4794425,
+    "sha256": "3c536f378a72125830a8f93657779379ad7a5ebf7f1906e02c4d94b1cb82453a"
+  },
+  {
+    "path": "Godot original/hover-racer/Main.tscn",
+    "bytes": 1673,
+    "sha256": "56df33471c25baeaef6b3662f93d6a96794cd8a6818db8f957829d04abd2d0df"
+  },
+  {
+    "path": "Godot original/hover-racer/ship.gd.uid",
+    "bytes": 20,
+    "sha256": "93932b9f5a94fb0bcbeb05a5a340f01a4beb4d8b33befdd4c0b7d1b4c7071eac"
+  },
+  {
+    "path": "Godot original/hover-racer/test_track.gd.uid",
+    "bytes": 20,
+    "sha256": "65711e29ffca47fe55f8dcc458140772942232d646e8dee66184e871aff14726"
+  },
+  {
+    "path": "Godot original/hover-racer/pod_visual.gd.uid",
+    "bytes": 20,
+    "sha256": "d160a3f0642afe940bebad5a60e1a56bb12fd884ca0ba32ff8870a9871674816"
+  },
+  {
+    "path": "Godot original/hover-racer/CanyonSlice.tscn",
+    "bytes": 160682,
+    "sha256": "3daf010f4c613024ed8fccfc82e44444cfad421131505852f9c8d2e22c210b9a"
+  },
+  {
+    "path": "Godot original/hover-racer/ship.gd",
+    "bytes": 9921,
+    "sha256": "376014ba4a9e7b332cf7958f2336adeee934b3d126f1a9e375e808bef4919581"
+  },
+  {
+    "path": "Godot original/hover-racer/icon.svg",
+    "bytes": 995,
+    "sha256": "6c80384360a5b269d1054bfb27241258154e2cc8167c522016fdc1820e84e0f8"
+  },
+  {
+    "path": "Godot original/hover-racer/test_track.gd",
+    "bytes": 2227,
+    "sha256": "b8e025afc673ce254c9b56206ffc053a3c5dc882bf106bcc508d8035ddb561fe"
+  },
+  {
+    "path": "Godot original/hover-racer/TESTING.md",
+    "bytes": 5713,
+    "sha256": "44350f834b95d817f06cd0de52e2a2e0afd886c50a66d5f9529066863313349a"
+  },
+  {
+    "path": "Godot original/hover-racer/.editorconfig",
+    "bytes": 33,
+    "sha256": "3b2c749c8a940905a08f727d8be9017c9568a12421c0aee7e37e9543b3751b1b"
+  },
+  {
+    "path": "Godot original/hover-racer/.gitignore",
+    "bytes": 46,
+    "sha256": "d6194b1a176268740a0b7f153bd4926908b4a0955a9a311181c0200b4329bc94"
+  },
+  {
+    "path": "Godot original/hover-racer/icon.svg.import",
+    "bytes": 1013,
+    "sha256": "07015d2f09d5310e05dcf33d892d2dc2c62e461e652ce0451dd57959d5af1968"
+  },
+  {
+    "path": "Godot original/hover-racer/.gitattributes",
+    "bytes": 80,
+    "sha256": "21b01a606c9f85f18bb9230245f00ab104df7409cbb2fe9423f6751ca72ba754"
+  },
+  {
+    "path": "Godot original/hover-racer/pod_visual.gd",
+    "bytes": 4369,
+    "sha256": "5944e9e238bdb2c28dcf5f1341cec139ab0268dcc3991b73e98862f7f5772206"
+  },
+  {
+    "path": "Godot original/hover-racer/project.godot",
+    "bytes": 5364,
+    "sha256": "e60c9fedac585e533693a7dded0b5044a77b0fa965d66913846fd6d039daf67b"
+  },
+  {
+    "path": "Godot original/hover-racer/TestTrack.tscn",
+    "bytes": 872791,
+    "sha256": "ff4884221bd762e74def8ff8b4eeb0527b18b58491a252a9d1b6b8cfd08f3912"
+  },
+  {
+    "path": "Godot original/hover-racer/tools/build_course.gd",
+    "bytes": 6406,
+    "sha256": "4da01540255eba3a3bf25e88c165aa5b69ffdc6852dad59406c7e87b9b14fa97"
+  },
+  {
+    "path": "Godot original/hover-racer/tools/build_course.gd.uid",
+    "bytes": 18,
+    "sha256": "66b6fd29a0e2eb8f8dafa7f2b50c3111786c11c769475cdbc5dee9675f64be5b"
+  },
+  {
+    "path": "Godot original/hover-racer/tools/course_samples.json",
+    "bytes": 45306,
+    "sha256": "7fa3893535a6bb497354e2fbed9d574f96bfa9f7a3a7672af286ec4ce7629db9"
+  },
+  {
+    "path": "Godot original/hover-racer/tools/build_canyon.gd",
+    "bytes": 3416,
+    "sha256": "9b652ab4fec10f9c0df92d266b77f990203afd48fc208f9e29e808b31a5a8663"
+  },
+  {
+    "path": "Godot original/hover-racer/tools/build_canyon.gd.uid",
+    "bytes": 20,
+    "sha256": "89b0c38e252e5e3264edc8aef435b7795c2ca32426a2658eb30e4097caf694a9"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/neutral_coast.gd.uid",
+    "bytes": 20,
+    "sha256": "5282815a67a0932f2ed133649240f38373e40b1cd0d642fa3f7978543366a103"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/neutral_coast.gd",
+    "bytes": 3789,
+    "sha256": "71cdcdf978758ffa93dc78a953757cc104d76701e27b32ad08e8153f61a6e8a6"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/hill_course.gd",
+    "bytes": 4204,
+    "sha256": "4ef0457953684d3690ee464c02e3f684f4d1a72e83666be4b9835e24bb96d14e"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/controller_input.gd",
+    "bytes": 7241,
+    "sha256": "755b88f744c9b0c17eb14bcd3105b3b3e48a3cb10d5342ed73be67d4ce733dba"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/controller_input.gd.uid",
+    "bytes": 20,
+    "sha256": "69b7c06397b32369040b6b3cf892c81d5d79dad293b8a81783549ddba5dccc07"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/power_contrast.gd.uid",
+    "bytes": 20,
+    "sha256": "389015c5de00a81cb069f117621252d0c74274414e3f16473b1e6dd1c67f9a84"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/power_contrast.gd",
+    "bytes": 3108,
+    "sha256": "d52d8a354ed7e413ce729ebd522448e9197781b87895241b0f4dabd8e0b8167a"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/canyon_podracer.gd.uid",
+    "bytes": 20,
+    "sha256": "ba71a1dc81ccba8a179767c60ffe3dc435210753088645e8d8b139ee01085e9a"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/hill_course.gd.uid",
+    "bytes": 20,
+    "sha256": "a80435f7e35682856c5759fe1f3f4af58fff67e2b591abd0538d62e134e85884"
+  },
+  {
+    "path": "Godot original/hover-racer/tests/canyon_podracer.gd",
+    "bytes": 4249,
+    "sha256": "75b276c5a811def8c03f91dfa6072758810f1b02cc9951b99f20f6148b27d8e3"
+  },
+  {
+    "path": "Godot original/hover-racer/audio/wind.wav",
+    "bytes": 88244,
+    "sha256": "3bfbadb4f0a412903f8228e1d3b64cfed7a7814f340fc422ea8e3e75318e00d6"
+  },
+  {
+    "path": "Godot original/hover-racer/audio/engine.wav",
+    "bytes": 88244,
+    "sha256": "a358f280157ed178d19d59afc122e7ea6cb573f47fa3b154f6ceacc64f36e668"
+  },
+  {
+    "path": "Godot original/hover-racer/audio/engine.wav.import",
+    "bytes": 482,
+    "sha256": "e5f605b51c133553c0039f9da84efc9d0cb9dae15461d36642d765e6ac5481a6"
+  },
+  {
+    "path": "Godot original/hover-racer/audio/README.md",
+    "bytes": 222,
+    "sha256": "a1e2c149a607db4dd6f39dccd51f994d1da8be492560adc12693470bea0a60c5"
+  },
+  {
+    "path": "Godot original/hover-racer/audio/wind.wav.import",
+    "bytes": 476,
+    "sha256": "a627a0b9248f92d01a0befb329157a54b355488de1caf66ddd0f82ebcca55bfb"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/canyon-course.png.import",
+    "bytes": 952,
+    "sha256": "880622dda56a2a9d7cd5f42287be2ef4aa3429c61ec21a31594fec82b70734e0"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/powered-camera.png.import",
+    "bytes": 955,
+    "sha256": "cead6be5b1ee9cd7586fe343d2a7e45318bdbe22d2922a6bd87e4cda4e1f7cc7"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/podracer.png.import",
+    "bytes": 937,
+    "sha256": "bcfea05aee8196c9190f5ca55a3dae46321ca3cbf0b4d4cd72021679f7029d00"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/coasting-camera.png",
+    "bytes": 156450,
+    "sha256": "54179de3302c9d79d36308ced36b9396b02e3351afc2cdfa219d1ddda4154d82"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/canyon-course.png",
+    "bytes": 71316,
+    "sha256": "039a77bad78b05c6654a0a019f6660645da5a05178374e16e7300ec51dc78d8d"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/coasting-camera.png.import",
+    "bytes": 957,
+    "sha256": "5e37531d6d9a69ad0846ba11b37ecbeeb62ff293828d8c8483575e4d8938f909"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/canyon-chase.png.import",
+    "bytes": 949,
+    "sha256": "98b237b49c5f976fd5d2317a466bdf04594bf7573fe3ddc9d85435e2766971df"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/podracer.png",
+    "bytes": 59446,
+    "sha256": "4ef52ee533ae54e8a6cb928b833adf0171852d42ade0fc35693f22806ca09555"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/canyon-chase.png",
+    "bytes": 153210,
+    "sha256": "34842bbf27143b680efa4e681110b23fa0e3488ce34a3347f53da9ce9ba64dcf"
+  },
+  {
+    "path": "Godot original/hover-racer/previews/powered-camera.png",
+    "bytes": 158654,
+    "sha256": "caf606f4105766b63f439789a1f4bbe23dd5886413e8fcb7449687f85741ac29"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/Main.before-test-track.tscn.bak",
+    "bytes": 1512,
+    "sha256": "0a6ad6001d50764cd05a8952e4d157d8467b6864ca6f01078461bc1dbc3e6377"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/ship.before-controller.gd.bak",
+    "bytes": 1166,
+    "sha256": "99d965ea2a391782521fc60cc64ec27566995558e638d092847897a20d0716fa"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/project.godot.before-bank-hover.bak",
+    "bytes": 2808,
+    "sha256": "b0a790977b4cf7f4fcb799e58e74375570612acedd22405da7814564a7c6cfd0"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/ship.gd.before-bank-hover.bak",
+    "bytes": 1171,
+    "sha256": "3ead11d609147b6dc3d39fb4c4d4cf183bad29803f1f31c1e69655f24ae903e5"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/project.before-controller.godot.bak",
+    "bytes": 601,
+    "sha256": "3b08d07db81732ead8fc317ad5d658539aa64ceba85f8eeea8bf14147cfb4474"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/TestTrack.before-tight-corners.tscn.bak",
+    "bytes": 107552,
+    "sha256": "56294898661698ddaae01bf891f8791b145d7b6c9aef69918fd4b5fd9b0b2a8a"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/project.godot.before-right-stick.bak",
+    "bytes": 2808,
+    "sha256": "d951d82f45e678f5a659617743dc771ea6508f66183323cfad6cd7edfa37e999"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/test_track.before-controller.gd.bak",
+    "bytes": 1357,
+    "sha256": "62d1d6bdd094f8cd5b3e34d966c2c2ef6868c8aebf2f37858e18b6cf6fe4e685"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/test_track.gd.before-bank-hover.bak",
+    "bytes": 1955,
+    "sha256": "f465f345d9858b48c50e36673cef0ab82b7345b24f56cb587aa82a373d292e86"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/ship.before-tight-corners.gd.bak",
+    "bytes": 1166,
+    "sha256": "99d965ea2a391782521fc60cc64ec27566995558e638d092847897a20d0716fa"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/test_track.before-tight-corners.gd.bak",
+    "bytes": 1354,
+    "sha256": "139c405db07474d89bd998e0f3fc78b752d5dafafb6956a647eec6118b0495a5"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/controller_input.gd.before-bank-hover.bak",
+    "bytes": 4050,
+    "sha256": "1132feec1e2227799935ae4649799430227acb8230ff96b319c498c0e1f199f1"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/test_track.gd.before-right-stick.bak",
+    "bytes": 1953,
+    "sha256": "d24060fefebc63e9e7a70b947e3b5b80c9208396b9932b8ceef5e58b8bedd956"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/controller_input.gd.before-right-stick.bak",
+    "bytes": 3894,
+    "sha256": "6604cc9bb9a3e7bce2034fcd17bafbbdd5043aca1bd1116a0e713bbe7c9943b8"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/ship.gd.bak",
+    "bytes": 9921,
+    "sha256": "376014ba4a9e7b332cf7958f2336adeee934b3d126f1a9e375e808bef4919581"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/neutral_coast.gd.bak",
+    "bytes": 3790,
+    "sha256": "d0352f11e8c7b12adc51d9eaaa49fd98d3982a08f8dc7244ff2bb5aec5f6288c"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/test_track.gd.bak",
+    "bytes": 2227,
+    "sha256": "b8e025afc673ce254c9b56206ffc053a3c5dc882bf106bcc508d8035ddb561fe"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/project.godot.bak",
+    "bytes": 3784,
+    "sha256": "01c8efd9ae5a43fe54a9ea07453644d527189421cc65b8668355e5f1fa1b3407"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/power_contrast.gd.bak",
+    "bytes": 3092,
+    "sha256": "2b73eedef4f8f2b09eea374cf1bba51667ae78972aa4a55e0ff34625be39a074"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/controller_input.gd.bak",
+    "bytes": 7235,
+    "sha256": "b120bed8c81998796fd01d9ae230993ca6e26cfeb67601f4b9445583a1b56eaf"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/TESTING.md.bak",
+    "bytes": 5713,
+    "sha256": "44350f834b95d817f06cd0de52e2a2e0afd886c50a66d5f9529066863313349a"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/hill_course.gd.bak",
+    "bytes": 4206,
+    "sha256": "910903c187129af4bb14fdb80a61d6d12756a9917a1790fe180185a49034bf1f"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-104-pulldown/canyon_podracer.gd.bak",
+    "bytes": 4249,
+    "sha256": "75b276c5a811def8c03f91dfa6072758810f1b02cc9951b99f20f6148b27d8e3"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/ship.gd.bak",
+    "bytes": 9473,
+    "sha256": "6e697fd867c6113209c6942f03bd520ce16ed4439305d179616075210614fada"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/test_track.gd.bak",
+    "bytes": 2134,
+    "sha256": "c3b569901e8c32779a20aca0c5e04ba7e56eed696e5928f0f053df241fdd62a4"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/controller_input.gd.bak",
+    "bytes": 8330,
+    "sha256": "fbcf52f8da7875715bb7243e7e146ae7a04aa6f77267100cf9c833828786491f"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/TESTING.md.bak",
+    "bytes": 4804,
+    "sha256": "601e40a878d865606cc74a6e2e709dfe0043feaf85af3340ddf2ab064b11c711"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/hill_course.gd.bak",
+    "bytes": 4188,
+    "sha256": "1524286c3e88ea7c6d0da89b57a941b7f7c627647a116cc1079492f5e5928798"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-coast-slowdown/canyon_podracer.gd.bak",
+    "bytes": 4317,
+    "sha256": "0a13acff3742c7282f3a7fa348a385d1e8db57bbd464346bf3c4324ba791cc0d"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/ship.gd.bak",
+    "bytes": 9576,
+    "sha256": "a9710be6e028cc0ba63c0f0642fd235df61270df1242eef4a5da8ea875fec5ac"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/neutral_coast.gd.bak",
+    "bytes": 3823,
+    "sha256": "b9675af2d675c0986cf0cbe96b975322f78d2ad2f2737a34d15af125ec45e99d"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/test_track.gd.bak",
+    "bytes": 2135,
+    "sha256": "60b8d07794104269c707538474e9c5782f5439e970e4074fff67cd0d7d6dfda2"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/project.godot.bak",
+    "bytes": 4753,
+    "sha256": "cb3932b3adde79ed3c87474dc654a3862d5e27d5a0580c7c68358ee24f7ac804"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/controller_input.gd.bak",
+    "bytes": 8431,
+    "sha256": "531271dc6e490d55a822b0aad943e05aec393648795b271313293df11f372beb"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/TESTING.md.bak",
+    "bytes": 5723,
+    "sha256": "eda3333ea0dc9d41ed8ecb9cad77a63727bfa80b8a7b21baaebbc90a2cb668cb"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/hill_course.gd.bak",
+    "bytes": 4383,
+    "sha256": "3c47a7f1b640ebb032aa81387bffd6a7c8071cff7bc9734e986c45354b4982f2"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-trigger-additive-steering/canyon_podracer.gd.bak",
+    "bytes": 4272,
+    "sha256": "85087185963e657e3a3a058da28f99e6e36463765f44bd9eda0869fd7a67f2fe"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/ship.gd.bak",
+    "bytes": 6506,
+    "sha256": "ac201b250e6e2422e96d00d993219e046ff321ac6bfcda010ed590f4560e7481"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/test_track.gd.bak",
+    "bytes": 2198,
+    "sha256": "ce8117b25eb52e67886e9885a443a370bda098b8540e20897bcb93972eda9ad4"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/project.godot.bak",
+    "bytes": 3299,
+    "sha256": "20e279e846932f8585f663ec91f25eca5ac3b5f0d9f0e074530bef1b81e0f774"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/controller_input.gd.bak",
+    "bytes": 8613,
+    "sha256": "7f3e56c0e7ccb879002542e4804567d229653394371b254e08665c5a532e96be"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/TESTING.md.bak",
+    "bytes": 2719,
+    "sha256": "a4e3b30742cd4f90b8fd43251d819ab9c1e0729b035feb2b51374f72bfce7401"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-full-circle-heading/hill_course.gd.bak",
+    "bytes": 3962,
+    "sha256": "0b21f9d934be60fa7dff147b330eeb3200065783734ca969e98bb29c304e86e7"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/ship.gd.bak",
+    "bytes": 8219,
+    "sha256": "e823e4c028d07ca67974b1525018780d87e496aa766cbdaccbf2fb8f4f1c26bb"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/neutral_coast.gd.bak",
+    "bytes": 3790,
+    "sha256": "36e5aa8aa7cf1f50e017bebb639d35dba1b58f9ff919f27dc6975ad61747af11"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/pod_visual.gd.bak",
+    "bytes": 4369,
+    "sha256": "2d3cbc323c857de7a6eb23446efb0ca05934e613cbcd6e08272f460c3f5b9352"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/controller_input.gd.bak",
+    "bytes": 7234,
+    "sha256": "a2858555b7fdaf3f83bff978e0f81af57f3a592b1ce6bd4efc307de079e46a90"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/TESTING.md.bak",
+    "bytes": 4056,
+    "sha256": "d5e9be77272eebe5c970fb7aaf0d3d3eb20671085ebbad942f28e4ea76c7265f"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/hill_course.gd.bak",
+    "bytes": 4161,
+    "sha256": "82155a4a2ea3b9b0bb6f45594499fdfcc974891063309e47b97972d2ff2bfb1a"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-launch-camera-contrast/canyon_podracer.gd.bak",
+    "bytes": 4202,
+    "sha256": "8955584dff1a2e2cb55d5245ebb5a59312030cb815d07eb5253897c79012e833"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/ship.gd.bak",
+    "bytes": 5879,
+    "sha256": "fea511cb284e867f90c7b9ac646ac7dcc8e648bfe56b34088dd1d27b7714da17"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/test_track.gd.bak",
+    "bytes": 2153,
+    "sha256": "162c0c91fe91cd0e1f55daa09bd547e2e99fd520adb6d05bff46c38e6998b79e"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/project.godot.bak",
+    "bytes": 2817,
+    "sha256": "634f417a766a4e9c43a90bea899986c7e96b798587d247b09aa347081d1df6c5"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/controller_input.gd.bak",
+    "bytes": 6949,
+    "sha256": "7525e7295e96b3fef63d598e3fd5205d409125f799cc784f7d65a43120c8491a"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/TESTING.md.bak",
+    "bytes": 2504,
+    "sha256": "eb43b83dabb11099fb67fa70d05f655154f43cd81d1ee20effdb68c34a3e5f07"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-forward-lean/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/Main.tscn",
+    "bytes": 1499,
+    "sha256": "6369af92e129878af28225be91f80912afe977101bfd808e363500e49b0264c3"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/controller_input.gd",
+    "bytes": 5809,
+    "sha256": "34c4552b158cb16dcc6ebd1edfab4dd61e789d9feed557e70d3b956ac62966c4"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/project.godot.bak",
+    "bytes": 3042,
+    "sha256": "2195d25b284cb867637895c0cd8ab62282e41f3afa667f89d2b9492eb2a202b8"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/ship.gd",
+    "bytes": 2394,
+    "sha256": "0ecf292befc0148f50e7fa4204405a9b3111d388ee81cc47dad36afc735cf8c9"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/test_track.gd",
+    "bytes": 2019,
+    "sha256": "a5b4fb90e4fc70634458ce0562b9342cfc7191666db97e1d383b6c93a915e533"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-speed-hills/TestTrack.tscn",
+    "bytes": 113060,
+    "sha256": "3293fcc0b72459a489e957c447e3f01229475ad01f798089bf24f655774dcbb9"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/ship.gd.bak",
+    "bytes": 5379,
+    "sha256": "1915e21ff889c56244010e86df2b812c454530e92659a81c7803e4871258ce11"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/test_track.gd.bak",
+    "bytes": 2040,
+    "sha256": "1d0e5369f711c4b8be1321541f81d8fa2940607a7f846e5242c11213e0a6cf77"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/project.godot.bak",
+    "bytes": 3042,
+    "sha256": "2195d25b284cb867637895c0cd8ab62282e41f3afa667f89d2b9492eb2a202b8"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/controller_input.gd.bak",
+    "bytes": 5803,
+    "sha256": "d0d9c1c4c1f8b22876c6e7573d2074e8793c1d1aba69f57cfe5b949bc8a2f480"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/TESTING.md.bak",
+    "bytes": 1762,
+    "sha256": "f6ffff8322f42ed3a072837f7a7c50b98546d4bedebf6a34b6a49cd550cf71cb"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-independent-thrusters/hill_course.gd.bak",
+    "bytes": 4933,
+    "sha256": "6797036cee761071ef6158ec4b738e1ff60630d9345bab7889879c7ba3474e55"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/ship.gd.bak",
+    "bytes": 8378,
+    "sha256": "79ea5d459e75029b4e8bead3ce740511db75d01ae98c9e256cfb36261e042583"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/test_track.gd.bak",
+    "bytes": 2234,
+    "sha256": "1843cbe34551fbf1298a3f9ce15e454a13761551b2c687c69be43f4f1be6a4dc"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/controller_input.gd.bak",
+    "bytes": 8121,
+    "sha256": "009ad2f0918fe3e0b0d99c2a0d2d58cf639e0bca1b383d7b51857c83972a3463"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/TESTING.md.bak",
+    "bytes": 3390,
+    "sha256": "2aa300e3e5e54434801a119b9f4397864887f672e22e790641726823985da174"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/.gdignore",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/Main.tscn.bak",
+    "bytes": 1499,
+    "sha256": "6369af92e129878af28225be91f80912afe977101bfd808e363500e49b0264c3"
+  },
+  {
+    "path": "Godot original/hover-racer/backups/before-canyon-podracer/hill_course.gd.bak",
+    "bytes": 4051,
+    "sha256": "1c39e9fb44fdec1eaafd42237b60cefa3e5d7440a83ab0ef6fda8b38016c8b47"
+  },
+  {
+    "path": "Project code/index.html",
+    "bytes": 283550,
+    "sha256": "82f94e395264a8d98debb73b721a496ca5e5303aaf5580592833ff740c0f641c"
+  },
+  {
+    "path": "Project code/package.json",
+    "bytes": 895,
+    "sha256": "3b5fb06cd0f1f4c35186b4cabdb95ad04e6e0ae08204e999c21f21cd506b7dac"
+  },
+  {
+    "path": "Project code/package-lock.json",
+    "bytes": 127080,
+    "sha256": "f79fec27dbb5699bfa8b96ad86f4fd2bbdb190313a4d555738c2be2cc61b7a8a"
+  },
+  {
+    "path": "Project code/README.md",
+    "bytes": 1516,
+    "sha256": "5cf855f0fd16ab4da82e12287927cfcddc4be99cf849201dd2d391dbf8429ae4"
+  },
+  {
+    "path": "Project code/CHANGELOG.md",
+    "bytes": 835,
+    "sha256": "094a988884eae828e55d541b2df83823fb9f6b3088d6d5d280372cecec77a512"
+  },
+  {
+    "path": "Project code/build.cmd",
+    "bytes": 226,
+    "sha256": "6b85bcc40f88b454e3ad9b0c1bae8b0624ca5c80207bce59243b216d7a0e71bc"
+  },
+  {
+    "path": "Project code/build.ps1",
+    "bytes": 3472,
+    "sha256": "eb6a9e99e0e19c5dd0eae27c78d704af258e6d1951165ae3e719bfef91ea0746"
+  },
+  {
+    "path": "Project code/.gitignore",
+    "bytes": 49,
+    "sha256": "fd5019a60fc338020c25555107ee690c78deb1b963e391d0fb556e71f7b83ddb"
+  },
+  {
+    "path": "Project code/desktop/main.cjs",
+    "bytes": 2425,
+    "sha256": "358fa039d857d6a12166845ff6213d7873a5553d59c52311c81b9c88298b2a26"
+  },
+  {
+    "path": "References/ship-reference.png",
+    "bytes": 295872,
+    "sha256": "ba9737ef0d64686e97219ff2b5242201ccc662113eb34c06d7098bf58d859ad5"
+  },
+  {
+    "path": "Windows portable/WipeoutRacer-1.0.0-x64-portable.exe",
+    "bytes": 110428435,
+    "sha256": "e6ae58a5eadb61417ff075a946e27d69f498146422e2e0fcc487c985a3e7a862"
+  },
+  {
+    "path": "Windows portable/LICENSE.electron.txt",
+    "bytes": 1096,
+    "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
+  },
+  {
+    "path": "Windows portable/LICENSES.chromium.html",
+    "bytes": 5705935,
+    "sha256": "7dac8267ac6da8d959cfe88f5f055b18a397f10230380b5329125e167bf5639b"
+  }
+]

@@ -1,0 +1,170 @@
+# Godot --headless --path . --script res://tests/controller_input.gd
+extends SceneTree
+var failures := 0
+var ship: CharacterBody3D
+
+func require(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)
+
+func axis(index: int, value: float) -> void:
+	var event := InputEventJoypadMotion.new()
+	event.device = 0
+	event.axis = index
+	event.axis_value = value
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+
+func key(code: Key, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = code
+	event.keycode = code
+	event.pressed = pressed
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+
+func frames(count: int) -> void:
+	for i in range(count): await physics_frame
+
+func neutral() -> void:
+	axis(JOY_AXIS_LEFT_Y,0)
+	axis(JOY_AXIS_RIGHT_Y,0)
+
+func reset() -> void:
+	neutral()
+	ship.position = Vector3(55,2,30)
+	ship.rotation = Vector3.ZERO
+	ship.velocity = Vector3.ZERO
+	ship.reset_visuals()
+
+func horizontal() -> Vector3:
+	return Vector3(ship.velocity.x,0,ship.velocity.z)
+
+func _initialize() -> void:
+	call_deferred("check")
+
+func check() -> void:
+	var scene = load("res://Main.tscn").instantiate()
+	root.add_child(scene)
+	ship = scene.get_node("SHIP")
+	await frames(3)
+	var camera_rest: Transform3D = ship.get_node("Camera3D").transform
+	var collision_rest: Transform3D = ship.get_node("CollisionShape3D").transform
+	for action in ["left_forward","left_reverse","right_forward","right_reverse","reset_ship"]:
+		require(InputMap.has_action(action),"Missing action " + action)
+	for action in ["thrust","brake","steer_left","steer_right","gentle_left","gentle_right"]:
+		require(not InputMap.has_action(action),"Obsolete binding remains: " + action)
+	# Old horizontal axes and triggers must do nothing.
+	for index in [JOY_AXIS_LEFT_X,JOY_AXIS_RIGHT_X,JOY_AXIS_TRIGGER_LEFT,JOY_AXIS_TRIGGER_RIGHT]: axis(index,1)
+	await frames(5)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Obsolete controls affect ship")
+	for index in [JOY_AXIS_LEFT_X,JOY_AXIS_RIGHT_X,JOY_AXIS_TRIGGER_LEFT,JOY_AXIS_TRIGGER_RIGHT]: axis(index,0)
+	axis(JOY_AXIS_LEFT_Y,-0.1)
+	axis(JOY_AXIS_RIGHT_Y,0.1)
+	await frames(3)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Stick deadzones")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-0.5)
+	axis(JOY_AXIS_RIGHT_Y,-0.5)
+	await frames(10)
+	var partial: float = horizontal().length()
+	require(partial>0 and partial<15,"Partial forward thrust")
+	require(ship.velocity.z<0 and absf(ship.rotation.y)<0.001,"Equal forward should travel straight")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,-1)
+	await frames(10)
+	require(horizontal().length()>partial*1.5,"Proportional analog magnitude")
+	require(ship.engines[0].visible and ship.engines[1].visible,"Independent forward glows")
+	require(ship.engines[0].position.z>0 and ship.engines[1].position.z>0,"Forward exhaust positions")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,1)
+	axis(JOY_AXIS_RIGHT_Y,1)
+	await frames(15)
+	require(ship.velocity.z>20 and absf(ship.rotation.y)<0.001,"Equal reverse should travel straight backward")
+	require(ship.engines[0].position.z<0 and ship.engines[1].position.z<0,"Reverse exhaust positions")
+	await frames(25)
+	require(horizontal().length()<=ship.max_speed+0.01 and horizontal().length()>ship.max_speed-0.01,"Reverse speed cap")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,1)
+	await frames(15)
+	require(ship.rotation.y < -0.3 and horizontal().is_zero_approx(),"Left forward/right reverse should rotate right in place")
+	require(ship.engines[0].position.z>0 and ship.engines[1].position.z<0,"Mixed direction engine cues")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,1)
+	axis(JOY_AXIS_RIGHT_Y,-1)
+	await frames(15)
+	require(ship.rotation.y > 0.3 and horizontal().is_zero_approx(),"Right forward/left reverse should rotate left in place")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-1)
+	await frames(12)
+	require(ship.rotation.y < -0.1 and horizontal().length()>5,"One-sided left thrust propels and turns right")
+	require(ship.engines[0].visible and not ship.engines[1].visible,"One-sided exhaust activity")
+	reset()
+	axis(JOY_AXIS_RIGHT_Y,-1)
+	await frames(12)
+	require(ship.rotation.y > 0.1 and horizontal().length()>5,"One-sided right thrust propels and turns left")
+	reset()
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,-0.5)
+	await frames(12)
+	require(ship.rotation.y < -0.05 and ship.velocity.z < -10,"Unequal forward thrust combines propulsion and rotation")
+	var coast := horizontal()
+	var yaw: float = ship.rotation.y
+	neutral()
+	await frames(18)
+	require(horizontal().is_equal_approx(coast) and is_equal_approx(ship.rotation.y,yaw),"Neutral must preserve drift and stop powered rotation")
+	# In-place turning while moving must preserve independent momentum.
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,1)
+	await frames(10)
+	require(horizontal().is_equal_approx(coast),"Counter-thrust rotation should preserve drifting momentum")
+	neutral()
+	var heading := -ship.global_transform.basis.z
+	var slip_before := absf(horizontal().normalized().signed_angle_to(heading,Vector3.UP))
+	axis(JOY_AXIS_LEFT_Y,-1)
+	axis(JOY_AXIS_RIGHT_Y,-1)
+	await frames(10)
+	require(absf(horizontal().normalized().signed_angle_to(heading,Vector3.UP))<slip_before,"Powered grip should pull toward heading")
+	reset()
+	ship.velocity = Vector3(0,0,-20)
+	axis(JOY_AXIS_LEFT_Y,1)
+	axis(JOY_AXIS_RIGHT_Y,1)
+	await frames(2)
+	require(ship.velocity.z<0 and ship.velocity.z>-20,"Reverse should brake before reversing")
+	await frames(20)
+	require(ship.velocity.z>0,"Sustained reverse should reverse travel")
+	reset()
+	key(KEY_W,true)
+	key(KEY_UP,true)
+	await frames(8)
+	require(ship.velocity.z<0 and absf(ship.rotation.y)<0.001,"Keyboard equal forward")
+	key(KEY_W,false)
+	key(KEY_UP,false)
+	key(KEY_S,true)
+	key(KEY_DOWN,true)
+	await frames(3)
+	require(ship.left_thrust<0 and ship.right_thrust<0,"Keyboard reverse")
+	key(KEY_S,false)
+	key(KEY_DOWN,false)
+	var button := InputEventJoypadButton.new()
+	button.device = 0
+	button.button_index = JOY_BUTTON_Y
+	button.pressed = true
+	Input.parse_input_event(button)
+	Input.flush_buffered_events()
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)) and ship.velocity.is_zero_approx(),"Y reset")
+	button.pressed = false
+	Input.parse_input_event(button)
+	ship.position.z = 10
+	key(KEY_R,true)
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)),"R reset")
+	key(KEY_R,false)
+	require(ship.get_node("Camera3D").transform.is_equal_approx(camera_rest) and ship.get_node("CollisionShape3D").transform.is_equal_approx(collision_rest),"Visual effects moved camera/collision")
+	require(ship.rotation.x==0 and ship.rotation.z==0,"Body must stay level")
+	print("Twin thrusters: analog/deadzones, forward/reverse, both turn signs, unequal/single inputs, coast, powered grip, obsolete controls, keyboard, exhaust and reset; failures=",failures)
+	quit(0 if failures==0 else 1)

@@ -1,0 +1,1 @@
+Original synthesized engine and wind loops generated for this project. No external audio samples. 22,050 Hz mono PCM, two-second loops. Runtime volume/pitch follow independent engine inputs and actual horizontal velocity.

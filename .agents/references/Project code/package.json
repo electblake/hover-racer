@@ -1,0 +1,30 @@
+{
+  "name": "wipeout-racer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hover Racer — Canyon Run desktop game",
+  "author": "Wipeout Racer",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --smoke-test",
+    "build:win": "electron-builder --win portable --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.wipeoutracer.game",
+    "productName": "Wipeout Racer",
+    "asar": true,
+    "directories": { "output": "dist" },
+    "files": ["index.html", "desktop/main.cjs", "package.json"],
+    "artifactName": "WipeoutRacer-${version}-${arch}-portable.${ext}",
+    "win": {
+      "target": [{ "target": "portable", "arch": ["x64"] }],
+      "signAndEditExecutable": false
+    },
+    "portable": { "requestExecutionLevel": "user" }
+  }
+}

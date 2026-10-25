@@ -1,0 +1,189 @@
+extends CharacterBody3D
+
+@export var max_speed: float = 52.0
+@export var acceleration: float = 145.0
+@export var turn_speed: float = 1.8
+@export var thrust_grip: float = 6.5
+@export var bank_degrees: float = 36.0
+@export var heading_response: float = 6.0
+@export_range(0.0, 0.5) var stick_deadzone: float = 0.18
+@export var hover_amplitude: float = 0.10
+@export var hover_height: float = 1.5
+@export var hover_response: float = 22.0
+
+@onready var visual: MeshInstance3D = $MeshInstance3D
+@onready var camera: Camera3D = $Camera3D
+var visual_rest_position: Vector3
+var visual_rest_rotation: Vector3
+var camera_rest_fov: float
+var hover_time := 0.0
+var power_blend := 0.0
+var road_normal := Vector3.UP
+var engines: Array[MeshInstance3D] = []
+var engine_levels := Vector2.ZERO
+var left_thrust := 0.0
+var right_thrust := 0.0
+var left_command := Vector2.ZERO
+var right_command := Vector2.ZERO
+var gesture_active := false
+var gesture_yaw := 0.0
+var target_direction := Vector3.FORWARD
+
+func _ready() -> void:
+	visual_rest_position = visual.position
+	visual_rest_rotation = visual.rotation
+	camera_rest_fov = camera.fov
+	collision_mask = 3 # Road and barriers; road sampling ignores the barriers.
+	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
+	for side in [-1.0, 1.0]:
+		var engine := MeshInstance3D.new()
+		engine.name = "LeftThruster" if side < 0 else "RightThruster"
+		var mesh := BoxMesh.new()
+		mesh.size = Vector3(0.35, 0.18, 0.65)
+		engine.mesh = mesh
+		engine.position = Vector3(side * 0.55, 0, 1.65)
+		var glow := StandardMaterial3D.new()
+		glow.emission_enabled = true
+		engine.material_override = glow
+		visual.add_child(engine)
+		engines.append(engine)
+		engine.visible = false
+
+func reset_visuals() -> void:
+	hover_time = 0.0
+	power_blend = 0.0
+	road_normal = Vector3.UP
+	visual.position = visual_rest_position
+	visual.rotation = visual_rest_rotation
+	camera.fov = camera_rest_fov
+	engine_levels = Vector2.ZERO
+	left_thrust = 0.0
+	right_thrust = 0.0
+	left_command = Vector2.ZERO
+	right_command = Vector2.ZERO
+	gesture_active = false
+	gesture_yaw = rotation.y
+	target_direction = -global_transform.basis.z
+	for engine in engines:
+		engine.visible = false
+
+func road_at(point: Vector3) -> Dictionary:
+	# Jolt can miss a ray exactly on a shared triangle edge. Tiny fallback offsets
+	# keep suspension continuous at seams without bridging any real track gaps.
+	for offset in [Vector3.ZERO, Vector3(0.04,0,0), Vector3(-0.04,0,0), Vector3(0,0,0.04), Vector3(0,0,-0.04)]:
+		var origin: Vector3 = point + offset
+		var query := PhysicsRayQueryParameters3D.create(origin + Vector3.UP*8.0,origin - Vector3.UP*40.0,1,[get_rid()])
+		var hit := get_world_3d().direct_space_state.intersect_ray(query)
+		if not hit.is_empty():
+			return hit
+	return {}
+
+func stick_command(side: String) -> Vector2:
+	# Read raw per-axis values, then apply ONE radial deadzone to the full vector.
+	# Separate per-axis deadzones distort circles and weaken diagonals.
+	var raw := Vector2(
+		Input.get_action_raw_strength(side + "_right") - Input.get_action_raw_strength(side + "_left"),
+		Input.get_action_raw_strength(side + "_reverse") - Input.get_action_raw_strength(side + "_forward")
+	)
+	var magnitude := minf(raw.length(), 1.0)
+	if magnitude <= stick_deadzone:
+		return Vector2.ZERO
+	return raw.normalized() * (magnitude-stick_deadzone) / (1.0-stick_deadzone)
+
+func _physics_process(delta: float) -> void:
+	left_command = stick_command("left")
+	right_command = stick_command("right")
+	var activity := (left_command.length()+right_command.length()) * 0.5
+	var propulsion := 0.0
+	var yaw_rate := 0.0
+	var differential := (left_command.y-right_command.y) * 0.5
+	if activity > 0.001:
+		if not gesture_active:
+			# The follow camera turns with the ship. Freeze its initial yaw as the
+			# reference until both sticks centre, so held left never becomes a spin.
+			gesture_yaw = rotation.y
+			gesture_active = true
+		var combined := (left_command+right_command) * 0.5
+		var coherence := combined.length() / activity
+		var direction_mix := smoothstep(0.12, 0.55, coherence)
+		var directional_yaw := 0.0
+		if combined.length() > 0.001:
+			target_direction = Vector3(combined.x,0,combined.y).normalized().rotated(Vector3.UP,gesture_yaw)
+			var forward := -global_transform.basis.z
+			var error := forward.signed_angle_to(target_direction,Vector3.UP)
+			directional_yaw = clampf(error*heading_response,-turn_speed,turn_speed)*activity
+			# Launch hard once aligned; avoid lunging the wrong way during a U-turn.
+			var alignment := maxf(forward.dot(target_direction),0.0)
+			propulsion = combined.length()*direction_mix*lerpf(0.15,1.0,alignment)
+		yaw_rate = lerpf(differential*turn_speed,directional_yaw,direction_mix)
+		# In direction mode both engines drive forward after the ship turns. In
+		# opposed mode the per-engine signed exhaust still shows counter-thrust.
+		left_thrust = lerpf(-left_command.y,left_command.length(),direction_mix)
+		right_thrust = lerpf(-right_command.y,right_command.length(),direction_mix)
+	else:
+		gesture_active = false
+		left_thrust = 0.0
+		right_thrust = 0.0
+	rotate_y(yaw_rate*delta)
+
+	# Neutral and cancelled thrust never change horizontal drifting momentum.
+	var horizontal := Vector3(velocity.x,0,velocity.z)
+	if propulsion > 0.001:
+		var forward := -global_transform.basis.z
+		horizontal += forward*acceleration*propulsion*delta
+		var along := forward*horizontal.dot(forward)
+		var sideways := horizontal-along
+		horizontal = (along+sideways*exp(-thrust_grip*propulsion*delta)).limit_length(max_speed)
+	velocity.x = horizontal.x
+	velocity.z = horizontal.z
+
+	# Look one physics step ahead; vertical suspension never feeds speed or grip.
+	var road := road_at(global_position + horizontal * delta)
+	if not road.is_empty():
+		road_normal = road.normal
+		var target_y: float = road.position.y + hover_height
+		velocity.y = clampf((target_y - global_position.y) * hover_response, -35.0, 35.0)
+	else:
+		velocity.y -= 25.0 * delta
+	move_and_slide()
+	if global_position.y < -30.0:
+		global_position = Vector3(55, 2, 30)
+		rotation = Vector3.ZERO
+		velocity = Vector3.ZERO
+		reset_visuals()
+
+	_update_visuals(delta, propulsion, differential, yaw_rate, horizontal.length())
+
+func _update_visuals(delta: float, propulsion: float, differential: float, yaw_rate: float, speed: float) -> void:
+	hover_time += delta
+	var movement := clampf(speed / maxf(max_speed, 0.01), 0.0, 1.0)
+	var smoothing := 1.0 - exp(-8.0 * delta)
+	var activity := (absf(left_thrust) + absf(right_thrust)) * 0.5
+	power_blend = lerpf(power_blend, activity, 1.0 - exp(-14.0 * delta))
+	var forward := -global_transform.basis.z
+	var slope_pitch := atan2(-road_normal.dot(forward), maxf(road_normal.y, 0.01))
+	visual.rotation.z = lerp_angle(visual.rotation.z, visual_rest_rotation.z + clampf(yaw_rate / maxf(turn_speed, 0.01), -1.0, 1.0) * deg_to_rad(bank_degrees), smoothing)
+	# Differential thrust preserves the visual stern swing and banking.
+	var combined := absf(differential)
+	var stern_swing := clampf(yaw_rate * 0.07 * (1.0 + combined * 0.7), -0.21, 0.21)
+	stern_swing *= 1.0 - power_blend * 0.35
+	visual.rotation.y = lerp_angle(visual.rotation.y, visual_rest_rotation.y + stern_swing, 1.0-exp(-5.0*delta))
+	visual.rotation.x = lerp_angle(visual.rotation.x, visual_rest_rotation.x + slope_pitch - propulsion * deg_to_rad(4.0), smoothing)
+	# Released throttle has a light, rhythmic skip; only the mesh bobs.
+	var skip := pow(maxf(sin(hover_time * 7.5), 0.0), 2.0) * 0.18 * movement * (1.0-power_blend)
+	var bob := sin(hover_time * 4.2) * hover_amplitude * (0.3 + movement * 0.25)
+	visual.position = visual_rest_position + Vector3.UP * (bob + skip)
+	engine_levels = engine_levels.lerp(Vector2(left_thrust, right_thrust), 1.0-exp(-14.0*delta))
+	for i in range(engines.size()):
+		var level: float = engine_levels[i]
+		var engine := engines[i]
+		engine.visible = absf(level) > 0.03
+		# Forward exhaust is cyan at the rear; reverse exhaust is orange at the nose.
+		engine.position.z = 1.65 if level >= 0.0 else -1.65
+		engine.scale.z = 0.35 + absf(level) * 1.1
+		var glow := engine.material_override as StandardMaterial3D
+		var color := Color(0.1,0.7,1) if level >= 0.0 else Color(1,0.3,0.07)
+		glow.albedo_color = color
+		glow.emission = color
+		glow.emission_energy_multiplier = 0.5 + absf(level) * 3.0
+	camera.fov = lerpf(camera.fov, camera_rest_fov + movement * 6.0 + power_blend * 2.0, 1.0-exp(-3.0*delta))

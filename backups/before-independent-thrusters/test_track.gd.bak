@@ -1,0 +1,49 @@
+extends Node3D
+
+var ship: CharacterBody3D
+var readout: Label
+var controller_status := "Controller: not connected (keyboard ready)"
+
+func _ready() -> void:
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	_update_controller_status()
+	ship = get_parent().get_node("SHIP") as CharacterBody3D
+	var environment := WorldEnvironment.new()
+	var settings := Environment.new()
+	settings.background_mode = Environment.BG_COLOR
+	settings.background_color = Color(0.055, 0.09, 0.15)
+	settings.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	settings.ambient_light_color = Color(0.65, 0.78, 1.0)
+	settings.ambient_light_energy = 0.65
+	environment.environment = settings
+	add_child(environment)
+	var overlay := CanvasLayer.new()
+	add_child(overlay)
+	readout = Label.new()
+	readout.position = Vector2(24, 20)
+	readout.add_theme_font_size_override("font_size", 20)
+	readout.add_theme_color_override("font_shadow_color", Color.BLACK)
+	readout.add_theme_constant_override("shadow_offset_x", 2)
+	readout.add_theme_constant_override("shadow_offset_y", 2)
+	overlay.add_child(readout)
+
+func _process(_delta: float) -> void:
+	readout.text = "HOVER RACER  /  HILL CIRCUIT\nArrow keys: thrust / brake / steer   |   R: reset\nXbox: RT thrust / LT brake / Y reset\nLeft stick: steer + bank   |   Right stick: big turns\n%s\nSpeed: %02d m/s" % [controller_status, roundi(Vector2(ship.velocity.x, ship.velocity.z).length())]
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("reset_ship"):
+		ship.position = Vector3(55, 2, 30)
+		ship.rotation = Vector3.ZERO
+		ship.velocity = Vector3.ZERO
+		ship.reset_visuals()
+		get_viewport().set_input_as_handled()
+
+func _on_joy_connection_changed(_device: int, _connected: bool) -> void:
+	_update_controller_status()
+
+func _update_controller_status() -> void:
+	var devices := Input.get_connected_joypads()
+	if devices.is_empty():
+		controller_status = "Controller: not connected (keyboard ready)"
+	else:
+		controller_status = "Controller: %s" % Input.get_joy_name(devices[0])

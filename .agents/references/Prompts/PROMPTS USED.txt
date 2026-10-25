@@ -1,0 +1,24 @@
+USER PROMPTS USED TO CREATE AND MODIFY THIS GAME
+Human prompts only. Original spelling is preserved. The complete supplied plan is
+included separately as ORIGINAL IMPLEMENTATION PLAN.txt.
+
+INITIAL PLAN HANDOFF:
+read this and wait for the files but be fucking ready to do a good job
+
+BROWSER IMPLEMENTATION (with Video Game.zip):
+ok here it is, my pride an joy. build this as webgl optiized for browser using standards and w3 only and no other files but html and everything inline and use biuolt-in browser bc I want to see it evol e so keep it up to date.
+
+review all specs and imlement all features completely, ide3ntify and resolve all regressions and kep loical hst browser ui[ to date so I cna follow along.
+
+CONTROLLER MENU:
+add controller connection menu so I can connect and test my controller inputs
+
+SPACE COURSE AND NEW SHIP (unfinished):
+lets update the ship to look more like the reference. make the background space themed and have the level be a long twisting and bank level with a start and finish instead of a loop. improve the graphics, add jumps and landing physics
+Reference image is included under References/.
+
+SHARING PACKAGE:
+zip up everything i need to share this project with a friend include a text files that has the prompt used to generate this game. include the godot files and code too place it on my desktop and name it FOR BLAKE
+
+An Electron wrapper and Windows executable were already in the workspace.
+Their separate generation prompt is unavailable in this chat and has not been invented.

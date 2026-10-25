@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://ch36cefv3fjjg"]
+
+[ext_resource type="Script" uid="uid://dyhw36menl3xo" path="res://ship.gd" id="1_glv2v"]
+[ext_resource type="PackedScene" path="res://TestTrack.tscn" id="2_track"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glv2v"]
+albedo_color = Color(0.9999998, 0.53413, 0.19811311, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qf23w"]
+size = Vector3(1.5, 0.5, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qf23w"]
+size = Vector3(1.5, 0.5, 3)
+
+[node name="Node3D" type="Node3D" unique_id=143606414]
+
+[node name="TestTrack" parent="." unique_id=280345348 instance=ExtResource("2_track")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=768208690]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+
+[node name="SHIP" type="CharacterBody3D" parent="." unique_id=1489706304]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 2, 30)
+script = ExtResource("1_glv2v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SHIP" unique_id=885123327]
+material_override = SubResource("StandardMaterial3D_glv2v")
+mesh = SubResource("BoxMesh_qf23w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SHIP" unique_id=1616163720]
+shape = SubResource("BoxShape3D_qf23w")
+
+[node name="Camera3D" type="Camera3D" parent="SHIP" unique_id=637637516]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0, 4, 8)
+current = true

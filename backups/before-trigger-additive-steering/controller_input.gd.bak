@@ -1,0 +1,192 @@
+# Godot --headless --fixed-fps 60 --path . --script res://tests/controller_input.gd
+extends SceneTree
+var failures := 0
+var ship: CharacterBody3D
+
+func require(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)
+
+func axis(index: int, value: float) -> void:
+	var event := InputEventJoypadMotion.new()
+	event.device = 0
+	event.axis = index
+	event.axis_value = value
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+
+func sticks(left: Vector2, right: Vector2) -> void:
+	axis(JOY_AXIS_LEFT_X,left.x)
+	axis(JOY_AXIS_LEFT_Y,left.y)
+	axis(JOY_AXIS_RIGHT_X,right.x)
+	axis(JOY_AXIS_RIGHT_Y,right.y)
+
+func frames(count: int) -> void:
+	for i in range(count): await physics_frame
+
+func horizontal() -> Vector3:
+	return Vector3(ship.velocity.x,0,ship.velocity.z)
+
+func reset(yaw := 0.0) -> void:
+	sticks(Vector2.ZERO,Vector2.ZERO)
+	ship.position = Vector3(55,2,30)
+	ship.rotation = Vector3(0,yaw,0)
+	ship.velocity = Vector3.ZERO
+	ship.reset_visuals()
+
+func key(code: Key, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = code
+	event.keycode = code
+	event.pressed = pressed
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
+
+func _initialize() -> void:
+	call_deferred("check")
+
+func check() -> void:
+	var scene = load("res://Main.tscn").instantiate()
+	# Isolate direction/movement tests from the course walls, on a large flat arena.
+	# The separate hill test exercises the actual untouched course and its barriers.
+	scene.get_node("TestTrack").free()
+	if scene.has_node("CanyonSlice"): scene.get_node("CanyonSlice").free()
+	root.add_child(scene)
+	ship = scene.get_node("SHIP")
+	var floor_body := StaticBody3D.new()
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(2000,1,2000)
+	shape.shape = box
+	floor_body.add_child(shape)
+	scene.add_child(floor_body)
+	await frames(3)
+	var camera_rest: Transform3D = ship.get_node("Camera3D").transform
+	var collision_rest: Transform3D = ship.get_node("CollisionShape3D").transform
+	require(ship.max_speed == 52 and ship.acceleration == 145,"Requested tuning increase")
+	reset()
+	sticks(Vector2(0.1,0.1),Vector2(0.1,0.1))
+	await frames(3)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Radial deadzone")
+	# A diagonal outside the radial deadzone must work even if each axis is < .18.
+	sticks(Vector2(.15,-.15),Vector2(.15,-.15))
+	await frames(3)
+	require(ship.left_command.length()>0 and ship.velocity.length()>0,"Radial rather than axial deadzone")
+	for direction in [Vector2.UP,Vector2.RIGHT,Vector2.DOWN,Vector2.LEFT,Vector2(-1,-1).normalized(),Vector2(1,-1).normalized(),Vector2(-1,1).normalized(),Vector2(1,1).normalized()]:
+		reset()
+		sticks(direction,direction)
+		await frames(15)
+		if absf(direction.x)>0.1:
+			require(ship.rotation.y*direction.x<0,"Initial yaw sign %s" % direction)
+			require(ship.visual.rotation.z*direction.x<0,"Visible bank sign %s" % direction)
+		await frames(195)
+		var target := Vector3(direction.x,0,direction.y)
+		var forward := -ship.global_transform.basis.z
+		require(forward.dot(target)>.999,"Nose failed to face held direction %s" % direction)
+		require(horizontal().normalized().dot(target)>.98,"Travel failed to follow heading %s" % direction)
+		require(horizontal().length()<=52.01 and horizontal().length()>50,"Directional speed cap %s" % direction)
+		var settled_heading: Vector3 = forward
+		await frames(60)
+		require((-ship.global_transform.basis.z).dot(settled_heading)>.9999,"Held direction caused endless rotation %s" % direction)
+	# Moving around the circle while still held uses the SAME reference frame.
+	reset()
+	sticks(Vector2.LEFT,Vector2.LEFT)
+	await frames(180)
+	sticks(Vector2.RIGHT,Vector2.RIGHT)
+	await frames(240)
+	require((-ship.global_transform.basis.z).dot(Vector3.RIGHT)>.999 and horizontal().normalized().dot(Vector3.RIGHT)>.98,"Changing held direction must use the fixed reference")
+	# Capture the facing/camera reference at engagement, then hold it fixed.
+	reset(0.7)
+	sticks(Vector2.LEFT,Vector2.LEFT)
+	await frames(180)
+	var reference_target := Vector3.LEFT.rotated(Vector3.UP,0.7)
+	require((-ship.global_transform.basis.z).dot(reference_target)>.999,"Initial-camera-relative heading reference")
+	sticks(Vector2.ZERO,Vector2.ZERO)
+	await frames(3)
+	var heading: Vector3 = -ship.global_transform.basis.z
+	sticks(Vector2.UP,Vector2.UP)
+	await frames(30)
+	require((-ship.global_transform.basis.z).dot(heading)>.999,"Recentering should reanchor forward")
+	# Matched down is now turn-around-and-drive, covered above, not reverse thrust.
+	reset()
+	sticks(Vector2.UP,Vector2.DOWN)
+	await frames(20)
+	require(ship.rotation.y<-.4 and horizontal().is_zero_approx(),"Left up/right down must spin right")
+	require(ship.engines[0].position.z>0 and ship.engines[1].position.z<0,"Opposed thrust exhaust")
+	reset()
+	sticks(Vector2.DOWN,Vector2.UP)
+	await frames(20)
+	require(ship.rotation.y>.4 and horizontal().is_zero_approx(),"Left down/right up must spin left")
+	reset()
+	sticks(Vector2.UP,Vector2.DOWN*.95)
+	await frames(20)
+	require(ship.rotation.y<-.4 and horizontal().length()<0.01,"Near-cancellation must remain stable")
+	reset()
+	sticks(Vector2.LEFT,Vector2.RIGHT)
+	await frames(20)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Horizontal cancellation must be stable")
+	reset()
+	sticks(Vector2.UP,Vector2.LEFT)
+	await frames(210)
+	var mixed := Vector3(-1,0,-1).normalized()
+	require((-ship.global_transform.basis.z).dot(mixed)>.999 and horizontal().normalized().dot(mixed)>.98,"Mixed vectors should blend to heading")
+	reset()
+	sticks(Vector2.UP,Vector2.ZERO)
+	await frames(10)
+	var single_speed: float = horizontal().length()
+	require(single_speed>5 and ship.engines[0].visible and not ship.engines[1].visible,"Independent single-thruster activity")
+	reset()
+	sticks(Vector2.UP,Vector2.UP)
+	await frames(10)
+	require(horizontal().length()>single_speed*1.8,"Both thrusters provide stronger propulsion")
+	reset()
+	sticks(Vector2.UP*.5,Vector2.UP*.5)
+	await frames(10)
+	require(horizontal().length()<single_speed,"Analog magnitude scales propulsion")
+	var coast := horizontal()
+	var coast_yaw: float = ship.rotation.y
+	sticks(Vector2.ZERO,Vector2.ZERO)
+	await frames(30)
+	require(horizontal().length()<coast.length() and horizontal().normalized().dot(coast.normalized())>.999 and is_equal_approx(ship.rotation.y,coast_yaw),"Neutral slows drift without changing direction or locking heading")
+	coast = horizontal()
+	sticks(Vector2.UP,Vector2.DOWN)
+	await frames(15)
+	require(horizontal().is_equal_approx(coast),"Counter-thrust spin preserves moving drift")
+	reset()
+	for index in [JOY_AXIS_TRIGGER_LEFT,JOY_AXIS_TRIGGER_RIGHT]: axis(index,1)
+	await frames(5)
+	require(horizontal().is_zero_approx() and ship.rotation.is_zero_approx(),"Obsolete triggers must not interfere")
+	for index in [JOY_AXIS_TRIGGER_LEFT,JOY_AXIS_TRIGGER_RIGHT]: axis(index,0)
+	key(KEY_A,true)
+	key(KEY_LEFT,true)
+	await frames(180)
+	require((-ship.global_transform.basis.z).dot(Vector3.LEFT)>.999,"Keyboard directional equivalents")
+	key(KEY_A,false)
+	key(KEY_LEFT,false)
+	# Test the real HUD reset handler in the saved course scene.
+	var course = load("res://TestTrack.tscn").instantiate()
+	scene.add_child(course)
+	var button := InputEventJoypadButton.new()
+	button.device = 0
+	button.button_index = JOY_BUTTON_Y
+	button.pressed = true
+	Input.parse_input_event(button)
+	Input.flush_buffered_events()
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)) and ship.velocity.is_zero_approx(),"Y reset")
+	button.pressed = false
+	Input.parse_input_event(button)
+	ship.position.z = 10
+	key(KEY_R,true)
+	await frames(2)
+	require(ship.position.is_equal_approx(Vector3(55,2,30)),"R reset")
+	key(KEY_R,false)
+	require(ship.get_node("Camera3D").transform.is_equal_approx(camera_rest) and ship.get_node("CollisionShape3D").transform.is_equal_approx(collision_rest),"Visual effects moved camera/collision")
+	require(ship.rotation.x==0 and ship.rotation.z==0,"Body must stay level")
+	print("Full-circle controls: 8 held headings + actual travel, no endless spin, stable camera reference, radial analog/deadzone, mixed/opposed inputs, coast, keyboard, reset and 52m/s cap; failures=",failures)
+	scene.queue_free()
+	await process_frame
+	OS.delay_msec(120) # Let the audio mixer retire stopped playback buffers.
+	await process_frame
+	quit(0 if failures==0 else 1)
