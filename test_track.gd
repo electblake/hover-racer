@@ -28,7 +28,7 @@ func _ready() -> void:
 	overlay.add_child(readout)
 
 func _process(_delta: float) -> void:
-	readout.text = "HOVER RACER / CANYON RUN\nRT: gas | LT: air brake | Both sticks left/right: steer + bank\nSteer left + left stick down / right + right down: sharp turn\nOff gas: glide + slow stop | Gas again: pull toward nose\nW/S gas/brake | A/D + Arrows steer | Q/E pull | Y/R reset\n%s\nGas: %03d%%  Brake: %03d%%  Speed: %02d m/s" % [controller_status, roundi(ship.throttle_input*100), roundi(ship.brake_input*100), roundi(Vector2(ship.velocity.x, ship.velocity.z).length())]
+	readout.text = "HOVER RACER / CANYON RUN\nSpace: thrust | Shift: brake | Left/Right: steer | Down: sharp turn | R: reset\nUp/W: push both sticks | S: sharp turn | A/D: left/right pull\nIndependent sticks: I/J/K/L (left), T/F/G/H (right) | Q/E: left/right pull\nRT/LT: gas/brake | Both sticks: steer | Inside stick down: sharp turn | Y: reset\nOff gas: glide + slow stop | Gas again: pull toward nose\n%s\nGas: %03d%%  Brake: %03d%%  Speed: %02d m/s" % [controller_status, roundi(ship.throttle_input*100), roundi(ship.brake_input*100), roundi(Vector2(ship.velocity.x, ship.velocity.z).length())]
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("reset_ship"):

@@ -1,0 +1,7 @@
+[tasks.editor]
+description = "Open Hover Racer in the Godot editor"
+run = "godot --editor --path ."
+
+[tasks.play]
+description = "Launch Hover Racer"
+run = "godot --path ."
