@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-25
+
 ### Added
 
+- Added Windows release exports, a portable download, a per-user installer, SHA-256 checksums, and repeatable build/publish scripts.
 - Added modular Test Canyon, Long Canyon, Venus Aureate Sea, and Jupiter Ringrunner maps with menu selection.
 - Added a three-times-longer canyon course, reactive gold liquid and acid rain on Venus, and inward gravity, the Great Red Spot, and scenic moons on Jupiter.
 - Added live map previews with a steady center-road demo loop, isolated from the paused race.
@@ -44,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Loaded imported audio resources correctly in exported Windows builds.
 - Fixed steering from rest, braking near a stop, racer collisions, and submerged recovery.
 - Preserved race momentum through pause and cleared forces and transient state on respawn.
 - Fixed controller-only menu exits, profile-dialog focus loss, and map-switch lifecycle issues.

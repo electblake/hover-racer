@@ -79,7 +79,7 @@ func _exit_tree() -> void:
 func _audio_loop(path: String, name_: String) -> AudioStreamPlayer:
 	var player := AudioStreamPlayer.new()
 	player.name = name_
-	var stream := AudioStreamWAV.load_from_file(path)
+	var stream := load(path).duplicate() as AudioStreamWAV
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = roundi(stream.get_length()*stream.mix_rate)
