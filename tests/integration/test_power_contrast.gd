@@ -1,55 +1,67 @@
-extends "res://tests/support/game_test.gd"
-func frames(count: int) -> void:
-	for i in range(count): await get_tree().physics_frame
-func test_power_contrast() -> void:
-	var scene = load("res://Main.tscn").instantiate()
-	add_child_autofree(scene)
-	scene.get_node("TestTrack").set_menu_open(false)
-	await frames(3)
-	var ship = scene.get_node("SHIP")
-	ship.position = Vector3(55,2,70)
-	ship.velocity = Vector3.ZERO
-	ship.reset_visuals()
-	Input.action_press("thrust")
+extends "res://tests/support/vehicle_test.gd"
+
+func test_throttle_force_curve_and_boost_output() -> void:
+	vehicle.command.throttle = 1.0
+	await frames(60)
+	assert_between(vehicle.actual_speed, 27.0, 30.0, "Force accelerates mass; thrust tapers with speed")
+	await frames(900)
+	assert_almost_eq(vehicle.actual_speed, 90.0, 1.0)
+	vehicle.command.afterburner = true
+	await frames(180)
+	assert_eq(vehicle.reference_speed, 110.0)
+	assert_between(vehicle.actual_speed, 105.0, 111.0)
+	vehicle.command.ramjet = true
+	await frames(180)
+	assert_eq(vehicle.reference_speed, 140.0)
+	assert_between(vehicle.actual_speed, 133.0, 141.0)
+	vehicle.command.ramjet = false
+	vehicle.command.afterburner = false
+	var before := vehicle.actual_speed
 	await frames(6)
-	var speed: float = Vector2(ship.velocity.x,ship.velocity.z).length()
-	assert_true(speed>=14 and speed<=16,"Attack ramps launch to about 15m/s in 0.1s")
-	assert_true(ship.camera.position.z-ship.camera_rest_position.z>.25,"Prompt camera pullback on gas")
-	assert_true(ship.camera.fov-ship.camera_rest_fov>1,"Prompt FOV response on gas")
-	var reached_cap := -1
-	var max_pull := 0.0
-	var max_fov := 0.0
-	var prior_camera: Vector3 = ship.camera.position
-	var prior_fov: float = ship.camera.fov
-	for frame in range(24):
-		await get_tree().physics_frame
-		var current: float = Vector2(ship.velocity.x,ship.velocity.z).length()
-		if current>=ship.max_speed-.01 and reached_cap<0: reached_cap=frame+7
-		assert_true(current<=ship.max_speed+.01,"No speed overshoot")
-		max_pull=maxf(max_pull,ship.camera.position.z-ship.camera_rest_position.z)
-		max_fov=maxf(max_fov,ship.camera.fov-ship.camera_rest_fov)
-		assert_true(ship.camera.position.distance_to(prior_camera)<.2 and absf(ship.camera.fov-prior_fov)<1.5,"Camera onset must stay smooth")
-		prior_camera=ship.camera.position
-		prior_fov=ship.camera.fov
-	assert_true(reached_cap>=24 and reached_cap<=27,"Attack and sustain reach cap in about 0.42 seconds")
-	assert_true(max_pull>.9 and max_pull<=1.5,"Stronger bounded pullback")
-	assert_true(max_fov>8 and max_fov<=12,"Stronger bounded FOV")
-	var powered_fov: float = ship.camera.fov
-	Input.action_release("thrust")
-	await frames(ceili(ship.thrust_release * 60) + 1)
+	assert_between(vehicle.actual_speed, before - 2.0, before, "Excess momentum coasts rather than clamping")
+
+func test_partial_throttle_has_lower_equilibrium_speed() -> void:
+	vehicle.command.throttle = 0.25
+	await frames(60)
+	assert_almost_eq(vehicle.actual_speed, 7.5, 0.3)
+	vehicle.linear_velocity = Vector3(0, 0, -89)
+	await frames(600)
+	assert_between(vehicle.actual_speed, 74.0, 79.0, "Quarter thrust settles below full-power reference")
+
+func test_boost_priority_resource_timing_and_latch() -> void:
+	vehicle.command.throttle = 1.0
+	vehicle.command.afterburner = true
+	await frames(240)
+	assert_almost_eq(vehicle.fuel, 0.0, 0.5)
+	await frames(2)
+	assert_true(vehicle.depletion_latch)
+	assert_eq(vehicle.boost_mode, "none")
+	await frames(120)
+	assert_gt(vehicle.fuel, 10.0)
+	assert_eq(vehicle.boost_mode, "none")
+	vehicle.command.afterburner = false
+	await frames(2)
+	vehicle.command.afterburner = true
+	vehicle.command.ramjet = true
+	var fuel := vehicle.fuel
 	await frames(30)
-	assert_true(ship.camera.position.distance_to(ship.camera_rest_position)<.08,"Camera returns when coasting")
-	assert_true(powered_fov-ship.camera.fov>4,"Clear power/coast FOV contrast")
-	assert_true(not ship.engines[0].visible and not ship.engines[1].visible,"Exhaust switches off on release")
-	for pulse in range(6):
-		Input.action_press("thrust")
-		await frames(2)
-		Input.action_release("thrust")
-		await frames(2)
-		assert_true(Vector2(ship.velocity.x,ship.velocity.z).length()<=104.01,"Gas taps must not stack physical boosts")
-		assert_true(ship.throttle_kick<=1 and ship.camera.position.z-ship.camera_rest_position.z<=1.5,"Gas taps must not stack camera kick")
-	ship.reset_visuals()
-	assert_true(ship.throttle_kick==0 and ship.previous_power==0 and ship.camera.position.is_equal_approx(ship.camera_rest_position),"Reset clears onset effect")
-	scene.queue_free()
-	await get_tree().process_frame
-	await get_tree().process_frame
+	assert_eq(vehicle.boost_mode, "ramjet")
+	assert_eq(vehicle.fuel, fuel)
+	assert_almost_eq(vehicle.heat, 0.1, 0.005)
+
+func test_heat_warning_crash_once_and_frozen_resources() -> void:
+	watch_signals(vehicle)
+	vehicle.command.throttle = 1.0
+	vehicle.command.ramjet = true
+	await frames(241)
+	assert_signal_emit_count(vehicle, "heat_warning", 1)
+	assert_false(vehicle.is_crashed)
+	await frames(60)
+	assert_true(vehicle.is_crashed)
+	assert_signal_emit_count(vehicle, "crashed", 1)
+	assert_eq(vehicle.linear_velocity, Vector3.ZERO)
+	var frozen := Vector3(vehicle.fuel, vehicle.heat, vehicle.energy)
+	await frames(60)
+	assert_eq(Vector3(vehicle.fuel, vehicle.heat, vehicle.energy), frozen)
+	vehicle.crash("again")
+	assert_signal_emit_count(vehicle, "crashed", 1)

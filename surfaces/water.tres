@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="FluidMedium" load_steps=2 format=3]
+[ext_resource type="Script" path="res://fluid_medium.gd" id="1"]
+[resource]
+script = ExtResource("1")
+label = "Water"
+density_kg_m3 = 1000.0
+liquid = true
+linear_resistance_per_area = 800.0

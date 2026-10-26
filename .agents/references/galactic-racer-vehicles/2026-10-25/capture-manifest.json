@@ -1,0 +1,81 @@
+{
+  "bundle": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25",
+  "requested_urls": [
+    "https://galacticracer.gameslantern.com/glossary",
+    "https://galacticracer.gameslantern.com/vehicle-classes",
+    "https://galacticracer.gameslantern.com/vehicles",
+    "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide",
+    "https://starwarsgalacticracer.com/",
+    "https://news.xbox.com/en-us/2026/06/23/star-wars-galactic-racer-turns-podracing-into-roguelite/"
+  ],
+  "requested_domains": [],
+  "llms": [],
+  "mirrors": [
+    {
+      "url": "https://galacticracer.gameslantern.com/glossary",
+      "final_url": "https://galacticracer.gameslantern.com/glossary",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\galacticracer.gameslantern.com\\glossary.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicle-classes",
+      "final_url": "https://galacticracer.gameslantern.com/vehicle-classes",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\galacticracer.gameslantern.com\\vehicle-classes.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\galacticracer.gameslantern.com\\vehicles.md",
+      "status": "written"
+    },
+    {
+      "url": "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide",
+      "final_url": "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\www.starwars.com\\news\\star-wars-galactic-racer-vehicle-guide.md",
+      "status": "written"
+    },
+    {
+      "url": "https://starwarsgalacticracer.com/",
+      "final_url": "https://starwarsgalacticracer.com/",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\starwarsgalacticracer.com\\index.md",
+      "status": "written"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/06/23/star-wars-galactic-racer-turns-podracing-into-roguelite/",
+      "final_url": "https://news.xbox.com/en-us/2026/06/23/star-wars-galactic-racer-turns-podracing-into-roguelite/",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicles\\2026-10-25\\news.xbox.com\\en-us\\2026\\06\\23\\star-wars-galactic-racer-turns-podracing-into-roguelite\\index.md",
+      "status": "written"
+    }
+  ],
+  "errors": [
+    {
+      "url": "https://galacticracer.gameslantern.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    },
+    {
+      "url": "https://www.starwars.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    },
+    {
+      "url": "https://starwarsgalacticracer.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    },
+    {
+      "url": "https://news.xbox.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    }
+  ]
+}

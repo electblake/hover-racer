@@ -1,29 +1,32 @@
-extends "res://tests/support/game_test.gd"
+extends "res://tests/support/vehicle_test.gd"
 
-func test_fall_reset() -> void:
-	var scene = load("res://Main.tscn").instantiate()
-	add_child_autofree(scene)
-	scene.get_node("TestTrack").set_menu_open(false)
-	var ship = scene.get_node("SHIP")
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	# A fall, rather than the reset button, must restore a playable vehicle.
-	ship.position = Vector3(500, -29, 500)
-	ship.rotation.y = 1.2
-	ship.velocity = Vector3(20, -80, 10)
-	for frame in range(3):
-		await get_tree().physics_frame
-	assert_true(ship.position.distance_to(Vector3(55, 2, 30)) < 0.1, "Falling off the course returns to spawn")
-	assert_true(ship.rotation.is_zero_approx(), "Fall reset restores heading")
-	assert_true(Vector2(ship.velocity.x, ship.velocity.z).is_zero_approx(), "Fall reset clears horizontal momentum")
-	assert_true(ship.applied_thrust == 0 and ship.thrust_envelope.level == 0, "Fall reset clears thrust")
-	assert_true(ship.camera.position.is_equal_approx(ship.camera_rest_position), "Fall reset restores camera")
-	assert_true(not ship.wind_audio.playing, "Fall reset stops wind")
-	Input.action_press("thrust")
-	for frame in range(12):
-		await get_tree().physics_frame
-	assert_true(Vector2(ship.velocity.x, ship.velocity.z).length() > 20, "Vehicle can accelerate after a fall reset")
-	Input.action_release("thrust")
-	scene.queue_free()
-	await get_tree().process_frame
-	await get_tree().process_frame
+func test_airborne_keeps_momentum_with_drag_and_disables_ground_actuators() -> void:
+	vehicle.respawn(Transform3D(Basis.IDENTITY, Vector3(0, 100, 0)))
+	vehicle.linear_velocity = Vector3(20, 0, -30)
+	vehicle.command.throttle = 1.0
+	vehicle.command.brake = 1.0
+	vehicle.command.steering = 1.0
+	vehicle.command.ramjet = true
+	vehicle.command.maneuver = true
+	await frames(30)
+	assert_between(vehicle.linear_velocity.x, 19.0, 20.0)
+	assert_between(vehicle.linear_velocity.z, -30.0, -29.0)
+	assert_lt(vehicle.linear_velocity.y, -4.0)
+	assert_lt(vehicle.rotation.y, 0.0)
+	assert_eq(vehicle.boost_mode, "none")
+	assert_eq(vehicle.maneuver_blend, 0.0)
+	assert_true(vehicle.activate_ability())
+
+func test_respawn_resets_life_resources_and_transients() -> void:
+	watch_signals(vehicle)
+	vehicle.apply_damage(200)
+	assert_true(vehicle.is_crashed)
+	vehicle.respawn(Transform3D(Basis.IDENTITY, Vector3(0, 0.21, 0)))
+	assert_false(vehicle.is_crashed)
+	assert_eq(vehicle.health, 100.0)
+	assert_eq(vehicle.energy, 200.0)
+	assert_eq(vehicle.fuel, 100.0)
+	assert_eq(vehicle.heat, 0.0)
+	assert_eq(vehicle.linear_velocity, Vector3.ZERO)
+	vehicle.crash("second life")
+	assert_signal_emit_count(vehicle, "crashed", 2)
