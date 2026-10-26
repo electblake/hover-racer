@@ -3,8 +3,8 @@ extends "res://tests/support/game_test.gd"
 var scene: Node3D
 var ship
 
-func horizontal(ship: CharacterBody3D) -> Vector3:
-	return Vector3(ship.velocity.x,0,ship.velocity.z)
+func horizontal(ship: VehicleController) -> Vector3:
+	return Vector3(ship.linear_velocity.x,0,ship.linear_velocity.z)
 
 func before_each() -> void:
 	super.before_each()
@@ -41,50 +41,51 @@ func test_road_cross_sections_and_barriers() -> void:
 			var wall = space.intersect_ray(PhysicsRayQueryParameters3D.create(point,point+normal*side*17,2))
 			assert_true(not wall.is_empty(), "Barrier gap: %s" % point)
 
-func test_hover_clearance_on_both_hills() -> void:
-	# Traverse each complete hill under power at maximum speed.
-	var min_clearance := 100.0
-	var max_clearance := -100.0
-	for route in [[Vector3(55,2,-5),Vector3(0,0,-ship.max_speed),75],[Vector3(-150,2,-35),Vector3(0,0,ship.max_speed),88]]:
-		ship.position = route[0]
-		ship.rotation = Vector3(0,atan2(-route[1].x,-route[1].z),0)
-		ship.velocity = route[1]
-		ship.reset_visuals()
-		Input.action_press("thrust")
-		var peak := 0.0
-		for frame in range(route[2]):
-			await get_tree().physics_frame
-			var road: Dictionary = ship.road_at(ship.global_position)
-			assert_true(not road.is_empty(), "Lost road on hill at %s frame %d" % [ship.position,frame])
-			if not road.is_empty():
-				var clearance: float = ship.global_position.y-road.position.y
-				min_clearance = minf(min_clearance,clearance)
-				max_clearance = maxf(max_clearance,clearance)
-				assert_true(clearance>0.85 and clearance<2.2, "Unsafe hover clearance: %.3f" % clearance)
-			peak = maxf(peak,ship.position.y)
-			assert_true(absf(horizontal(ship).length()-ship.max_speed)<0.01, "Hill altered horizontal coast momentum")
-			assert_true(ship.rotation.x == 0 and ship.rotation.z == 0, "Physical roll or pitch")
-		assert_true(peak>11.0,"Ship failed to follow actual hill height")
-	Input.action_release("thrust")
 
-func test_launch_release_and_feedback_bounds() -> void:
-	# Powered launch reaches strong speed promptly and repeated taps cannot stack speed.
-	ship.position = Vector3(55,2,70)
-	ship.velocity = Vector3.ZERO
-	ship.rotation = Vector3.ZERO
-	ship.reset_visuals()
-	Input.action_press("thrust")
-	for frame in range(13): await get_tree().physics_frame
-	assert_true(horizontal(ship).length()>20,"Launch acceleration too weak")
-	for pulse in range(4):
-		Input.action_press("thrust")
-		for frame in range(5): await get_tree().physics_frame
-		Input.action_release("thrust")
-		for frame in range(5): await get_tree().physics_frame
-		assert_true(horizontal(ship).length()<=ship.max_speed+0.01,"Repeated throttle stacked speed")
-	var coast := horizontal(ship)
-	for frame in range(30): await get_tree().physics_frame
-	assert_true(horizontal(ship).length()<coast.length() and horizontal(ship).length()>0,"Release should glide while slowing")
-	assert_true(ship.power_blend<0.02 and not ship.engines[0].visible and not ship.engines[1].visible,"Powered cue did not fade")
-	assert_true(ship.camera.fov>=ship.camera_rest_fov and ship.camera.fov<=ship.camera_rest_fov+ship.speed_fov+ship.powered_fov+ship.kick_fov+.01,"Excessive FOV")
-	assert_true(ship.visual.position.distance_to(ship.visual_rest_position)<0.25,"Skip too strong")
+func test_grounded_hill_traversal_preserves_health_and_speed_bounds() -> void:
+	for route in [[Vector3(55, 0.8, -5), 0.0, 10.0], [Vector3(-150, 0.8, -35), PI, 14.0]]:
+		ship.respawn(Transform3D(Basis(Vector3.UP, route[1]), route[0]))
+		ship.player_controlled = false
+		ship.command.throttle = 1.0
+		var peak := 0.0
+		for frame in range(250):
+			await get_tree().physics_frame
+			peak = maxf(peak, ship.position.y)
+			assert_false(ship.is_crashed, "Hill must not crash the vehicle")
+			assert_lte(ship.actual_speed, 90.1, "No slope speed creation")
+			if (ship.position.z < -110 and route[1] == 0.0) or (ship.position.z > 110 and route[1] != 0.0): break
+		assert_gt(peak, route[2], "Follow the actual hill")
+		assert_gt(ship.health, 95.0, "Ordinary floor support is not an impact")
+
+func test_boost_speed_follows_crest_and_descent_at_60_and_120_hz() -> void:
+	ship.player_controlled = false
+	for rate in [60, 120]:
+		Engine.physics_ticks_per_second = rate
+		ship.respawn(Transform3D(Basis.IDENTITY, Vector3(55, 0.8, -8)))
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+		ship.linear_velocity = Vector3(0, 0, -140)
+		var maximum_clearance := 0.0
+		var missed := 0
+		for frame in range(rate):
+			await get_tree().physics_frame
+			var point: Vector3 = ship.global_position
+			# A finite footprint measures clearance across triangle seams without
+			# depending on a zero-width ray hitting an exact shared edge.
+			var query := PhysicsShapeQueryParameters3D.new()
+			var probe := SphereShape3D.new()
+			probe.radius = 0.02
+			query.shape = probe
+			query.transform = Transform3D(Basis.IDENTITY, point + Vector3.UP)
+			query.motion = Vector3.DOWN * 16.0
+			query.collision_mask = 1
+			query.exclude = [ship.get_rid()]
+			var travel: PackedFloat32Array = ship.get_world_3d().direct_space_state.cast_motion(query)
+			assert_lt(travel[0], 1.0, "High-speed route retains a road below it at %s" % point)
+			maximum_clearance = maxf(maximum_clearance, travel[0] * 16.0 - 1.0 + probe.radius)
+			if not ship.supported: missed += 1
+			if point.z < -112: break
+		print("Crest ", rate, " Hz clearance ", maximum_clearance, " missed ", missed, " health ", ship.health)
+		assert_lt(maximum_clearance, 2.0, "Hover attraction follows descending track without launching")
+		assert_lte(missed, 1, "Support remains engaged across the crest")
+		assert_gt(ship.health, 95.0)

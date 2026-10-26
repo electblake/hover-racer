@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+[ext_resource type="Script" path="res://maps/map_definition.gd" id="1"]
+[ext_resource type="Environment" path="res://maps/canyon_environment.tres" id="2"]
+
+
+[resource]
+script = ExtResource("1")
+environment = ExtResource("2")
+title = "Physics Lab: Ice, Water & Wind"
+scene_path = "res://PhysicsTestTrack.tscn"
+spawn = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 30)

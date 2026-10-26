@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://maps/map_definition.gd" id="1"]
+[ext_resource type="Environment" path="res://maps/venus_environment.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+title = "Venus — Aureate Sea"
+environment = ExtResource("2")
+scene_path = "res://maps/map_3.tscn"
+corners = PackedVector3Array(55, 0, 200, 55, 0, -300, -180, 0, -300, -180, 0, -130, -310, 0, -130, -310, 0, 200)
+corner_radius = 44.0
+surroundings_center = Vector3(-127.5, -2, -50)
+surroundings_size = Vector3(1100, 1, 1300)
+road_path = "res://maps/venus_road.tscn"
+samples_path = "res://maps/map_3_samples.json"

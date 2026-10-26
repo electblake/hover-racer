@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://track_surface_3d.gd" id="surface_script"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5xqdl"]
 albedo_color = Color(0.57, 0.33, 0.17, 1)
 roughness = 0.98
@@ -1713,6 +1715,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_wd835")
 
 [node name="@StaticBody3D@2" type="StaticBody3D" parent="." unique_id=960814873]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.057322, 10.593724, -100)
 collision_layer = 2
 
@@ -1750,6 +1753,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_3h7c8")
 
 [node name="@StaticBody3D@6" type="StaticBody3D" parent="." unique_id=623478319]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.33581, 10.7695, -100)
 collision_layer = 2
 
@@ -1787,6 +1791,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_w524h")
 
 [node name="@StaticBody3D@14" type="StaticBody3D" parent="." unique_id=739419022]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.387922, 8.092989, -93)
 collision_layer = 2
 
@@ -1824,6 +1829,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_rvubu")
 
 [node name="@StaticBody3D@22" type="StaticBody3D" parent="." unique_id=539402803]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.41208, 8.182069, -93)
 collision_layer = 2
 
@@ -1861,6 +1867,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_874rr")
 
 [node name="@StaticBody3D@30" type="StaticBody3D" parent="." unique_id=859059835]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.58605, 14.840945, -86)
 collision_layer = 2
 
@@ -1898,6 +1905,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_qvx40")
 
 [node name="@StaticBody3D@38" type="StaticBody3D" parent="." unique_id=1978631340]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.08653, 14.374843, -86)
 collision_layer = 2
 
@@ -1935,6 +1943,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_16y57")
 
 [node name="@StaticBody3D@46" type="StaticBody3D" parent="." unique_id=79645213]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.107983, 12.814091, -79)
 collision_layer = 2
 
@@ -1972,6 +1981,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_u0r8r")
 
 [node name="@StaticBody3D@54" type="StaticBody3D" parent="." unique_id=788409060]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.291756, 17.09898, -79)
 collision_layer = 2
 
@@ -2009,6 +2019,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_w5ard")
 
 [node name="@StaticBody3D@62" type="StaticBody3D" parent="." unique_id=238768941]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.574654, 19.07889, -72)
 collision_layer = 2
 
@@ -2046,6 +2057,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_nna7b")
 
 [node name="@StaticBody3D@70" type="StaticBody3D" parent="." unique_id=230705396]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.0414, 16.529654, -72)
 collision_layer = 2
 
@@ -2083,6 +2095,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_c5h1e")
 
 [node name="@StaticBody3D@78" type="StaticBody3D" parent="." unique_id=1069656975]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.884333, 17.714306, -65)
 collision_layer = 2
 
@@ -2120,6 +2133,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_gryiw")
 
 [node name="@StaticBody3D@86" type="StaticBody3D" parent="." unique_id=1846882269]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.02639, 15.661095, -65)
 collision_layer = 2
 
@@ -2157,6 +2171,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_6hkdf")
 
 [node name="@StaticBody3D@94" type="StaticBody3D" parent="." unique_id=2105269052]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.129896, 16.250696, -58)
 collision_layer = 2
 
@@ -2194,6 +2209,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_o33gk")
 
 [node name="@StaticBody3D@102" type="StaticBody3D" parent="." unique_id=1890902278]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.03471, 16.92282, -58)
 collision_layer = 2
 
@@ -2231,6 +2247,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_o4ngj")
 
 [node name="@StaticBody3D@110" type="StaticBody3D" parent="." unique_id=1819266426]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.551407, 16.001366, -51)
 collision_layer = 2
 
@@ -2268,6 +2285,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_patfk")
 
 [node name="@StaticBody3D@118" type="StaticBody3D" parent="." unique_id=200713531]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.67595, 16.361176, -51)
 collision_layer = 2
 
@@ -2305,6 +2323,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_adout")
 
 [node name="@StaticBody3D@126" type="StaticBody3D" parent="." unique_id=1985055069]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.227814, 17.534214, -44)
 collision_layer = 2
 
@@ -2342,6 +2361,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_yk78l")
 
 [node name="@StaticBody3D@134" type="StaticBody3D" parent="." unique_id=986617790]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.63677, 15.174673, -44)
 collision_layer = 2
 
@@ -2379,6 +2399,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_l1hnn")
 
 [node name="@StaticBody3D@142" type="StaticBody3D" parent="." unique_id=916957199]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.206394, 12.567988, -37)
 collision_layer = 2
 
@@ -2416,6 +2437,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_lmcrk")
 
 [node name="@StaticBody3D@150" type="StaticBody3D" parent="." unique_id=1193606576]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.989, 12.139209, -37)
 collision_layer = 2
 
@@ -2453,6 +2475,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_u1bom")
 
 [node name="@StaticBody3D@158" type="StaticBody3D" parent="." unique_id=279745547]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.050056, 10.8074465, -30)
 collision_layer = 2
 
@@ -2490,6 +2513,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_jyckg")
 
 [node name="@StaticBody3D@166" type="StaticBody3D" parent="." unique_id=213174812]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.71064, 10.111637, -30)
 collision_layer = 2
 
@@ -2527,6 +2551,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_7c78d")
 
 [node name="@StaticBody3D@174" type="StaticBody3D" parent="." unique_id=19519160]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.03939, 9.618154, -23)
 collision_layer = 2
 
@@ -2564,6 +2589,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_3i8cy")
 
 [node name="@StaticBody3D@182" type="StaticBody3D" parent="." unique_id=695069244]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.787384, 10.377471, -23)
 collision_layer = 2
 
@@ -2601,6 +2627,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_kt6ur")
 
 [node name="@StaticBody3D@190" type="StaticBody3D" parent="." unique_id=2037383840]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.240902, 8.626396, -16)
 collision_layer = 2
 
@@ -2638,6 +2665,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_cy7k0")
 
 [node name="@StaticBody3D@198" type="StaticBody3D" parent="." unique_id=1289219925]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.34296, 7.8683763, -16)
 collision_layer = 2
 
@@ -2675,6 +2703,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_gn7w5")
 
 [node name="@StaticBody3D@206" type="StaticBody3D" parent="." unique_id=956285624]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.416435, 7.434864, -9)
 collision_layer = 2
 
@@ -2712,6 +2741,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_a605f")
 
 [node name="@StaticBody3D@214" type="StaticBody3D" parent="." unique_id=2058119703]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.396645, 5.5660534, -9)
 collision_layer = 2
 
@@ -2749,6 +2779,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_3pygx")
 
 [node name="@StaticBody3D@222" type="StaticBody3D" parent="." unique_id=1061154983]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.538376, 10.141616, -2)
 collision_layer = 2
 
@@ -2786,6 +2817,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_a3882")
 
 [node name="@StaticBody3D@230" type="StaticBody3D" parent="." unique_id=1563702124]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.7126, 5.7685685, -2)
 collision_layer = 2
 
@@ -2823,6 +2855,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_1ge4x")
 
 [node name="@StaticBody3D@238" type="StaticBody3D" parent="." unique_id=56166039]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.906387, 6.090749, 5)
 collision_layer = 2
 
@@ -2860,6 +2893,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_ayfsh")
 
 [node name="@StaticBody3D@246" type="StaticBody3D" parent="." unique_id=2046917330]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.047615, 8.702059, 5)
 collision_layer = 2
 
@@ -2897,6 +2931,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_xhytn")
 
 [node name="@StaticBody3D@254" type="StaticBody3D" parent="." unique_id=1396546211]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.285904, 7.1345806, 12)
 collision_layer = 2
 
@@ -2934,6 +2969,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_uo57k")
 
 [node name="@StaticBody3D@262" type="StaticBody3D" parent="." unique_id=462467425]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.768456, 7.9557924, 12)
 collision_layer = 2
 
@@ -2971,6 +3007,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_vkigo")
 
 [node name="@StaticBody3D@270" type="StaticBody3D" parent="." unique_id=602346750]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.027431, 5.793089, 19)
 collision_layer = 2
 
@@ -3008,6 +3045,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_j130k")
 
 [node name="@StaticBody3D@278" type="StaticBody3D" parent="." unique_id=563221102]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.10565, 6.680355, 19)
 collision_layer = 2
 
@@ -3045,6 +3083,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_61006")
 
 [node name="@StaticBody3D@286" type="StaticBody3D" parent="." unique_id=991768183]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.12571, 5.5330005, 26)
 collision_layer = 2
 
@@ -3082,6 +3121,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_odsi0")
 
 [node name="@StaticBody3D@294" type="StaticBody3D" parent="." unique_id=1409264538]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.86876, 9.947474, 26)
 collision_layer = 2
 
@@ -3119,6 +3159,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_tvb32")
 
 [node name="@StaticBody3D@302" type="StaticBody3D" parent="." unique_id=1556968620]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.712147, 9.638577, 33)
 collision_layer = 2
 
@@ -3156,6 +3197,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_0nyfa")
 
 [node name="@StaticBody3D@310" type="StaticBody3D" parent="." unique_id=1111922341]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.09241, 8.259443, 33)
 collision_layer = 2
 
@@ -3193,6 +3235,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_aklm4")
 
 [node name="@StaticBody3D@318" type="StaticBody3D" parent="." unique_id=1046263283]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.710608, 8.077676, 40)
 collision_layer = 2
 
@@ -3230,6 +3273,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_vm6cr")
 
 [node name="@StaticBody3D@326" type="StaticBody3D" parent="." unique_id=1001166897]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.55855, 8.80158, 40)
 collision_layer = 2
 
@@ -3267,6 +3311,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_8etma")
 
 [node name="@StaticBody3D@334" type="StaticBody3D" parent="." unique_id=24844305]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.91073, 7.893487, 47)
 collision_layer = 2
 
@@ -3304,6 +3349,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_yjmpm")
 
 [node name="@StaticBody3D@342" type="StaticBody3D" parent="." unique_id=513013195]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.193954, 8.522576, 47)
 collision_layer = 2
 
@@ -3341,6 +3387,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_71xfh")
 
 [node name="@StaticBody3D@350" type="StaticBody3D" parent="." unique_id=1947060046]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.320786, 7.3806286, 54)
 collision_layer = 2
 
@@ -3378,6 +3425,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_hemwe")
 
 [node name="@StaticBody3D@358" type="StaticBody3D" parent="." unique_id=1881581012]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.851555, 7.4767246, 54)
 collision_layer = 2
 
@@ -3415,6 +3463,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_ge4iw")
 
 [node name="@StaticBody3D@366" type="StaticBody3D" parent="." unique_id=278916571]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.905079, 10.494783, 61)
 collision_layer = 2
 
@@ -3452,6 +3501,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_e2mfv")
 
 [node name="@StaticBody3D@374" type="StaticBody3D" parent="." unique_id=1360686975]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.922646, 9.828457, 61)
 collision_layer = 2
 
@@ -3489,6 +3539,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_hdfrk")
 
 [node name="@StaticBody3D@382" type="StaticBody3D" parent="." unique_id=1171257094]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.136995, 9.922651, 68)
 collision_layer = 2
 
@@ -3526,6 +3577,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("CylinderMesh_uxhne")
 
 [node name="@StaticBody3D@390" type="StaticBody3D" parent="." unique_id=1145520784]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78.70321, 6.959729, 68)
 collision_layer = 2
 
@@ -3563,6 +3615,7 @@ material_override = SubResource("StandardMaterial3D_oropu")
 mesh = SubResource("CylinderMesh_1ad2w")
 
 [node name="@StaticBody3D@398" type="StaticBody3D" parent="." unique_id=402824029]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.829082, 6.2756004, 75)
 collision_layer = 2
 
@@ -3600,6 +3653,7 @@ material_override = SubResource("StandardMaterial3D_5xqdl")
 mesh = SubResource("CylinderMesh_p3acs")
 
 [node name="@StaticBody3D@406" type="StaticBody3D" parent="." unique_id=1287659887]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 77.642334, 9.778002, 75)
 collision_layer = 2
 
@@ -3637,6 +3691,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_hbv5q")
 
 [node name="@StaticBody3D@413" type="StaticBody3D" parent="." unique_id=1475628717]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 14, -85)
 collision_layer = 2
 
@@ -3649,6 +3704,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_4s6j1")
 
 [node name="@StaticBody3D@416" type="StaticBody3D" parent="." unique_id=572320164]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 14, -85)
 collision_layer = 2
 
@@ -3661,6 +3717,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("BoxMesh_2m3qw")
 
 [node name="@StaticBody3D@418" type="StaticBody3D" parent="." unique_id=974605219]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 22, -85)
 collision_layer = 2
 
@@ -3708,6 +3765,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_wqllq")
 
 [node name="@StaticBody3D@427" type="StaticBody3D" parent="." unique_id=1880124959]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 14, -35)
 collision_layer = 2
 
@@ -3720,6 +3778,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_fl1d7")
 
 [node name="@StaticBody3D@430" type="StaticBody3D" parent="." unique_id=1568891584]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 14, -35)
 collision_layer = 2
 
@@ -3732,6 +3791,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("BoxMesh_a8cg6")
 
 [node name="@StaticBody3D@433" type="StaticBody3D" parent="." unique_id=2025177683]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 22, -35)
 collision_layer = 2
 
@@ -3779,6 +3839,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_u0h07")
 
 [node name="@StaticBody3D@443" type="StaticBody3D" parent="." unique_id=1119675595]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 9, 30)
 collision_layer = 2
 
@@ -3791,6 +3852,7 @@ material_override = SubResource("StandardMaterial3D_md8po")
 mesh = SubResource("CylinderMesh_khutj")
 
 [node name="@StaticBody3D@446" type="StaticBody3D" parent="." unique_id=901752436]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 9, 30)
 collision_layer = 2
 
@@ -3803,6 +3865,7 @@ material_override = SubResource("StandardMaterial3D_y2m6y")
 mesh = SubResource("BoxMesh_h541k")
 
 [node name="@StaticBody3D@449" type="StaticBody3D" parent="." unique_id=478116183]
+script = ExtResource("surface_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 17, 30)
 collision_layer = 2
 

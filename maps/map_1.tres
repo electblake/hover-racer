@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://maps/map_definition.gd" id="1"]
+
+[ext_resource type="Environment" path="res://maps/canyon_environment.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+environment = ExtResource("2")
+title = "Test Canyon"
+scene_path = "res://maps/map_1.tscn"
+corners = PackedVector3Array(55.000000, 0, 140.000000, 55.000000, 0, -150.000000, -45.000000, 0, -150.000000, -45.000000, 0, -75.000000, -150.000000, 0, -75.000000, -150.000000, 0, 140.000000)
+corner_radius = 28.0
+hills = Array[Vector4]([Vector4(55, -110, -10, 10), Vector4(-150, -30, 110, 14)])
+canyon_start = -100
+canyon_end = 76
+arches = PackedFloat32Array(-85, -35, 30)
+surroundings_center = Vector3(-45, -1, 0)
+surroundings_size = Vector3(370, 1, 420)
+road_path = "res://TestTrack.tscn"
+canyon_path = "res://CanyonSlice.tscn"
+samples_path = "res://tools/course_samples.json"

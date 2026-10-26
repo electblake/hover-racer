@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://TestTrack.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://CanyonSlice.tscn" id="2"]
+
+[node name="Map1" type="Node3D"]
+
+[node name="Road" parent="." instance=ExtResource("1")]
+
+[node name="Canyon" parent="." instance=ExtResource("2")]

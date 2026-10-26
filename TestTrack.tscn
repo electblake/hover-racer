@@ -1,6 +1,7 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://test_track.gd" id="1_372ir"]
+[ext_resource type="Script" path="res://track_surface_3d.gd" id="surface_script"]
+
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wvmgj"]
 albedo_color = Color(0.17, 0.55, 0.67, 1)
@@ -4595,7 +4596,6 @@ size = Vector3(6, 0.05, 0.5)
 size = Vector3(6, 0.05, 0.5)
 
 [node name="TestTrack" type="Node3D" unique_id=1753418825]
-script = ExtResource("1_372ir")
 
 [node name="Barrier_0_0" type="MeshInstance3D" parent="." unique_id=2137085017]
 transform = Transform3D(-0.020655582, 0, 0.9997866, 0, 1, 0, -0.9997867, 0, -0.02065558, 27.873446, 2, 153.98364)
@@ -12002,11 +12002,13 @@ material_override = SubResource("StandardMaterial3D_6ntfe")
 mesh = SubResource("ArrayMesh_1lxft")
 
 [node name="RoadCollision" type="StaticBody3D" parent="." unique_id=1892079811]
+script = ExtResource("surface_script")
 
 [node name="@CollisionShape3D@342" type="CollisionShape3D" parent="RoadCollision" unique_id=1114268699]
 shape = SubResource("ConcavePolygonShape3D_iuccd")
 
 [node name="BarrierCollision" type="StaticBody3D" parent="." unique_id=780532739]
+script = ExtResource("surface_script")
 collision_layer = 2
 
 [node name="@CollisionShape3D@343" type="CollisionShape3D" parent="BarrierCollision" unique_id=442868782]

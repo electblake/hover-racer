@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://maps/venus_road.tscn" id="1"]
+[ext_resource type="Script" path="res://maps/venus.gd" id="2"]
+
+[node name="Map3" type="Node3D"]
+process_mode = 1
+script = ExtResource("2")
+
+[node name="Road" parent="." instance=ExtResource("1")]

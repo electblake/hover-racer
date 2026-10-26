@@ -1,8 +1,8 @@
-# Rebuild the saved static course: Godot --headless --path . --script res://tools/build_course.gd
+# Rebuild a saved course: godot_console --headless --path . --script res://tools/build_course.gd -- res://maps/map_2.tres
 extends SceneTree
 
 const WIDTH := 28.0
-const RADIUS := 28.0
+var definition: Resource
 var points: Array[Vector3] = []
 var root_track: Node3D
 var road_vertices := PackedVector3Array()
@@ -13,11 +13,7 @@ func _initialize() -> void:
 	call_deferred("build")
 
 func elevation(point: Vector3) -> float:
-	if point.x > 30.0 and point.z > -110.0 and point.z < -10.0:
-		return 10.0 * pow(sin(PI * (point.z + 110.0) / 100.0), 2)
-	if point.x < -120.0 and point.z > -30.0 and point.z < 110.0:
-		return 14.0 * pow(sin(PI * (point.z + 30.0) / 140.0), 2)
-	return 0.0
+	return definition.elevation(point)
 
 func material(color: Color, glow := false) -> StandardMaterial3D:
 	var result := StandardMaterial3D.new()
@@ -31,7 +27,7 @@ func material(color: Color, glow := false) -> StandardMaterial3D:
 func own(node: Node, parent: Node = null) -> void:
 	if parent == null:
 		parent = root_track
-	parent.add_child(node)
+	parent.add_child(node, true)
 	node.owner = root_track
 
 func box(name_: String, position_: Vector3, size_: Vector3, mat: Material, rotation_: Basis = Basis.IDENTITY) -> void:
@@ -50,16 +46,16 @@ func append_line(a: Vector3, b: Vector3) -> void:
 		points.append(a.lerp(b, float(i) / count))
 
 func build() -> void:
+	definition = load(OS.get_cmdline_user_args()[0])
 	root_track = Node3D.new()
 	root_track.name = "TestTrack"
-	root_track.set_script(load("res://test_track.gd"))
-	var corners: Array[Vector3] = [Vector3(55,0,140), Vector3(55,0,-150), Vector3(-45,0,-150), Vector3(-45,0,-75), Vector3(-150,0,-75), Vector3(-150,0,140)]
+	var corners: PackedVector3Array = definition.corners
 	var entries: Array[Vector3] = []
 	var exits: Array[Vector3] = []
 	for i in range(corners.size()):
 		var v := corners[i]
-		entries.append(v + (corners[(i - 1 + corners.size()) % corners.size()] - v).normalized() * RADIUS)
-		exits.append(v + (corners[(i + 1) % corners.size()] - v).normalized() * RADIUS)
+		entries.append(v + (corners[(i - 1 + corners.size()) % corners.size()] - v).normalized() * definition.corner_radius)
+		exits.append(v + (corners[(i + 1) % corners.size()] - v).normalized() * definition.corner_radius)
 	for i in range(corners.size()):
 		var center := entries[i] + exits[i] - corners[i]
 		var from := entries[i] - center
@@ -124,7 +120,7 @@ func build() -> void:
 	surface.material_override = road_mat
 	own(surface)
 	for data in [["RoadCollision",road_vertices,1], ["BarrierCollision",wall_triangles,2]]:
-		var body := StaticBody3D.new()
+		var body := TrackSurface3D.new()
 		body.name = data[0]
 		body.collision_layer = data[2]
 		own(body)
@@ -134,20 +130,20 @@ func build() -> void:
 		shape.set_faces(data[1])
 		collider.shape = shape
 		own(collider,body)
-	box("Surroundings",Vector3(-45,-1,0),Vector3(370,1,420),material(Color(0.035,0.055,0.08)))
+	box("Surroundings",definition.surroundings_center,definition.surroundings_size,material(Color(0.035,0.055,0.08)))
 	for row in range(2):
 		for col in range(14):
 			box("StartFinish",Vector3(42+col*2,0.54,20+row*2),Vector3(2,0.05,2),white if (row+col)%2 else black)
 	for x in [38,72]:
 		box("StartPylon",Vector3(x,4,20),Vector3(2,8,2),yellow)
 	# Distance bars before the north hairpin sequence.
-	for z in [-105,-115,-125]:
+	for z in [corners[1].z+45, corners[1].z+35, corners[1].z+25]:
 		box("BrakeMarker",Vector3(55,elevation(Vector3(55,0,z))+0.56,z),Vector3(6,0.05,0.5),yellow)
 	var packed := PackedScene.new()
 	assert(packed.pack(root_track) == OK)
-	assert(ResourceSaver.save(packed,"res://TestTrack.tscn") == OK)
-	var file := FileAccess.open("res://tools/course_samples.json",FileAccess.WRITE)
+	assert(ResourceSaver.save(packed,definition.road_path) == OK)
+	var file := FileAccess.open(definition.samples_path,FileAccess.WRITE)
 	file.store_string(JSON.stringify(samples))
-	print("Saved course: %d samples, %.0f metre lap, two hills (10m / 14m)" % [points.size(),length])
+	print("Saved course: %d samples, %.0f metre lap" % [points.size(),length])
 	root_track.free()
 	quit()
