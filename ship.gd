@@ -1,24 +1,50 @@
 extends CharacterBody3D
 
-@export var max_speed: float = 104.0
-@export var acceleration: float = 300.0
+@export_group("Drive")
+## Powered horizontal speed limit, in metres per second.
+@export_range(0.0, 500.0, 1.0, "or_greater") var max_speed: float = 104.0
+## Forward acceleration at full applied thrust, in metres per second squared.
+@export_range(0.0, 1000.0, 1.0, "or_greater") var acceleration: float = 300.0
 @export var coast_deceleration: float = 26.0 # Four seconds from 104 m/s.
-@export var turn_speed: float = 1.8
+@export var braking: float = 100.0
 @export var thrust_grip: float = 6.5
+
+@export_group("Thrust Envelope")
+## Time to reach requested gas, in seconds.
+@export_range(0.01, 2.0, 0.01, "or_greater") var thrust_attack: float = 0.12
+## Time to settle from peak to sustain, in seconds.
+@export_range(0.01, 2.0, 0.01, "or_greater") var thrust_decay: float = 0.18
+## Held thrust as a fraction of gas input (0 to 1).
+@export_range(0.0, 1.0, 0.01) var thrust_sustain: float = 0.92
+## Time to ease down to zero after releasing gas, in seconds.
+@export_range(0.01, 2.0, 0.01, "or_greater") var thrust_release: float = 0.28
+
+@export_group("Steering")
+## Held turn rate with both sticks fully deflected, in radians per second.
+@export_range(0.0, 6.0, 0.1, "or_greater") var turn_speed: float = 1.8
+## Turn onset and reversal acceleration, in radians per second squared.
+@export_range(0.1, 120.0, 0.1, "or_greater") var turn_acceleration: float = 36.0
+## Turn release deceleration, in radians per second squared.
+@export_range(0.1, 120.0, 0.1, "or_greater") var turn_deceleration: float = 48.0
+## Additional turn rate from pulling the inside stick down, in radians per second.
+@export_range(0.0, 8.0, 0.1, "or_greater") var down_turn_boost: float = 3.0
+
+@export_group("Visual Banking and Pitch")
 @export var bank_degrees: float = 36.0
-@export var down_turn_boost: float = 3.0
 @export var down_bank_degrees: float = 18.0
 @export var max_bank_degrees: float = 50.0
 @export var down_pitch_degrees: float = 3.0
 @export var power_pitch_degrees: float = 6.0
-@export var braking: float = 100.0
+@export_group("Input")
 @export_range(0.0, 0.25) var trigger_deadzone: float = 0.06
 @export_range(0.0, 0.5) var stick_deadzone: float = 0.18
+@export_group("Camera")
 @export var camera_pullback: float = 1.1
 @export var camera_kick_pullback: float = 0.4
 @export var powered_fov: float = 6.0
 @export var speed_fov: float = 4.0
 @export var kick_fov: float = 2.0
+@export_group("Hover")
 @export var hover_amplitude: float = 0.10
 @export var hover_height: float = 1.5
 @export var hover_response: float = 40.0
@@ -46,6 +72,9 @@ var throttle_input := 0.0
 var brake_input := 0.0
 var left_steering := 0.0
 var right_steering := 0.0
+var thrust_envelope := preload("res://thrust_envelope.gd").new()
+var applied_thrust := 0.0
+var yaw_velocity := 0.0
 
 func _ready() -> void:
 	visual_rest_position = visual.position
@@ -86,6 +115,9 @@ func _update_audio(speed_ratio: float) -> void:
 	elif speed_ratio<=0.035 and wind_audio.playing: wind_audio.stop()
 
 func reset_visuals() -> void:
+	yaw_velocity = 0.0
+	thrust_envelope.reset()
+	applied_thrust = 0.0
 	hover_time = 0.0
 	power_blend = 0.0
 	throttle_kick = 0.0
@@ -151,9 +183,12 @@ func _physics_process(delta: float) -> void:
 	elif steering>0.0: pull_amount = maxf(right_stick.y,0.0)
 	pull_amount *= smoothstep(0.0,0.35,absf(steering))
 	var yaw_rate := -steering*turn_speed-signf(steering)*pull_amount*down_turn_boost
-	rotate_y(yaw_rate*delta)
+	var turn_response := turn_deceleration if absf(yaw_rate) < absf(yaw_velocity) else turn_acceleration
+	yaw_velocity = move_toward(yaw_velocity, yaw_rate, turn_response * delta)
+	rotate_y(yaw_velocity*delta)
 	# Full air brake wins over throttle, including when both triggers are held.
-	var propulsion := throttle_input*(1.0-brake_input)
+	var propulsion: float = thrust_envelope.advance(throttle_input, delta, thrust_attack, thrust_decay, thrust_sustain, thrust_release)*(1.0-brake_input)
+	applied_thrust = propulsion
 	left_thrust = propulsion
 	right_thrust = propulsion
 	var horizontal := Vector3(velocity.x,0,velocity.z)
@@ -186,7 +221,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 		reset_visuals()
 
-	_update_visuals(delta, propulsion, steering, yaw_rate, horizontal.length(),pull_amount)
+	_update_visuals(delta, propulsion, steering, yaw_velocity, horizontal.length(),pull_amount)
 
 func _update_visuals(delta: float, propulsion: float, steering: float, yaw_rate: float, speed: float, pull_amount: float = 0.0) -> void:
 	hover_time += delta

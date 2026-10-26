@@ -1,0 +1,9 @@
+{
+  "physics_pages": 20,
+  "topic_guides": 21,
+  "local_links_checked": 170,
+  "toctree_coverage": "complete",
+  "source_text_sha256": "all 20 match capture manifest",
+  "runtime_tests": "not applicable; reference-only capture",
+  "media_and_api_pages": "not mirrored"
+}

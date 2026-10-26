@@ -14,6 +14,8 @@ Run commands from the repository root containing `project.godot` and `mise.toml`
 
 Use these tasks as the launch entry points. `mise.toml` owns the Godot commands; read it when task behavior needs checking rather than duplicating commands in scripts or invoking a hardcoded Godot executable path.
 
+For automated verification, use `mise run test` and the companion [hover-racer-test skill](../hover-racer-test/SKILL.md). Test requests use the headless test tasks; interactive launch requests continue to use the visible modes above.
+
 Launch only the requested mode. Keep the interactive editor or game visible and running for the user; do not add headless or automatic-quit flags. A mise process that remains active while Godot is open is expected.
 
 ## Available companion skills

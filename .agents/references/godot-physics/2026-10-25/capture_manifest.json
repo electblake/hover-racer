@@ -1,0 +1,226 @@
+{
+  "repository": "https://github.com/godotengine/godot-docs",
+  "branch": "stable",
+  "commit": "6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d",
+  "reference_date": "2026-10-25",
+  "mirrors": [
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/index.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/index.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\index.md",
+      "status": "written",
+      "sha256_text": "a1faf5eb1ec85109e9e3092ffc769a32964c88e82026e0a932581b5b6a2ad4b9",
+      "repository_path": "tutorials/physics/index.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/physics_introduction.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/physics_introduction.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\physics_introduction.md",
+      "status": "written",
+      "sha256_text": "54abe974f3a48b5e6e436f4c1113c568643af7db44ce4593f672fc29a19c850b",
+      "repository_path": "tutorials/physics/physics_introduction.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_jolt_physics.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_jolt_physics.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\using_jolt_physics.md",
+      "status": "written",
+      "sha256_text": "d18a89d8ce2ba3f56f15744ee6477ad6c75fbff5c2dd081c957db26577422dc0",
+      "repository_path": "tutorials/physics/using_jolt_physics.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/rigid_body.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/rigid_body.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\rigid_body.md",
+      "status": "written",
+      "sha256_text": "be6be7651418fd3e9ca9a4d15473992b6a3df2c8922626cd631d68870e7bf152",
+      "repository_path": "tutorials/physics/rigid_body.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_area_2d.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_area_2d.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\using_area_2d.md",
+      "status": "written",
+      "sha256_text": "7d80bc6af70aede5abb0c986cd3f328c977ed47a5310a517fa8870967967b72f",
+      "repository_path": "tutorials/physics/using_area_2d.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_character_body_2d.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/using_character_body_2d.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\using_character_body_2d.md",
+      "status": "written",
+      "sha256_text": "8b7524c46a5211ce9a14caad4e49640def52018376daa04ee35f927b1f791f98",
+      "repository_path": "tutorials/physics/using_character_body_2d.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/ray-casting.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/ray-casting.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\ray-casting.md",
+      "status": "written",
+      "sha256_text": "85fd673b0308dc52f8139a63614b254b8c453af5ca1071ec82f2300c7b030799",
+      "repository_path": "tutorials/physics/ray-casting.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/ragdoll_system.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/ragdoll_system.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\ragdoll_system.md",
+      "status": "written",
+      "sha256_text": "db4e9a6eef93cd2769d4fc19c3f9d0364987a0920eae29b6a58420b74c3be4f4",
+      "repository_path": "tutorials/physics/ragdoll_system.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/kinematic_character_2d.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/kinematic_character_2d.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\kinematic_character_2d.md",
+      "status": "written",
+      "sha256_text": "3eeea7b93356b8599a4116560e94aa7ca8ee63df0570d0690005c109c6e42286",
+      "repository_path": "tutorials/physics/kinematic_character_2d.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/soft_body.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/soft_body.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\soft_body.md",
+      "status": "written",
+      "sha256_text": "27f501dfda42fe4ab9fde1d219781edc86487528f03d6902296f7f1fdd80895d",
+      "repository_path": "tutorials/physics/soft_body.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/collision_shapes_2d.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/collision_shapes_2d.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\collision_shapes_2d.md",
+      "status": "written",
+      "sha256_text": "11e466404ac221d2208c9a31fd81f40b06b1b2993e54cfcd1b18876754f6339a",
+      "repository_path": "tutorials/physics/collision_shapes_2d.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/collision_shapes_3d.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/collision_shapes_3d.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\collision_shapes_3d.md",
+      "status": "written",
+      "sha256_text": "cc7e99bbdd81e03321fcea760284922e614183e3c4243a51199d2f9839fe84a5",
+      "repository_path": "tutorials/physics/collision_shapes_3d.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/large_world_coordinates.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/large_world_coordinates.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\large_world_coordinates.md",
+      "status": "written",
+      "sha256_text": "de122fcfebed608389f1f624d07a301683d8b8c031312349ca7f9a8e78945e95",
+      "repository_path": "tutorials/physics/large_world_coordinates.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/index.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/index.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\index.md",
+      "status": "written",
+      "sha256_text": "fb503f2acc036f69979dc27019fdad12ae0b7ca35a79a1449238527e3489bd37",
+      "repository_path": "tutorials/physics/interpolation/index.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/troubleshooting_physics_issues.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/troubleshooting_physics_issues.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\troubleshooting_physics_issues.md",
+      "status": "written",
+      "sha256_text": "09f91bbdb408ded68c0d9930fa137948ae8f3090b4f683bc4415523ecfde7a96",
+      "repository_path": "tutorials/physics/troubleshooting_physics_issues.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/physics_interpolation_quick_start_guide.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/physics_interpolation_quick_start_guide.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\physics_interpolation_quick_start_guide.md",
+      "status": "written",
+      "sha256_text": "1c7e3c469385727ab9930277e55e754a04ef8c68f37bd6d21c1ab50bab95f5bc",
+      "repository_path": "tutorials/physics/interpolation/physics_interpolation_quick_start_guide.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/physics_interpolation_introduction.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/physics_interpolation_introduction.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\physics_interpolation_introduction.md",
+      "status": "written",
+      "sha256_text": "e46398c070dc660067515a9a544aaa1ce18c79b36de3af65a2151a23931a93a9",
+      "repository_path": "tutorials/physics/interpolation/physics_interpolation_introduction.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/using_physics_interpolation.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/using_physics_interpolation.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\using_physics_interpolation.md",
+      "status": "written",
+      "sha256_text": "a0e1a9578e8831442a69f2b84741d6c99570513b10c31c8366a0eec13fe729cc",
+      "repository_path": "tutorials/physics/interpolation/using_physics_interpolation.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/advanced_physics_interpolation.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/advanced_physics_interpolation.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\advanced_physics_interpolation.md",
+      "status": "written",
+      "sha256_text": "6a670a213245e7d9949c29bff97b58bbf95123142d85141d045785afc61ba73d",
+      "repository_path": "tutorials/physics/interpolation/advanced_physics_interpolation.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/2d_and_3d_physics_interpolation.rst",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/tutorials/physics/interpolation/2d_and_3d_physics_interpolation.rst",
+      "content_type": "text/plain",
+      "origin": "official-repository",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\tutorials\\physics\\interpolation\\2d_and_3d_physics_interpolation.md",
+      "status": "written",
+      "sha256_text": "76cbfaff7ab8823292e758c2fdb2e57da18843e475fead9a60a9ac2b33a093f7",
+      "repository_path": "tutorials/physics/interpolation/2d_and_3d_physics_interpolation.rst"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/conf.py",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/conf.py",
+      "content_type": "text/plain",
+      "origin": "version-and-license",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\conf.md",
+      "status": "written",
+      "repository_path": "conf.py"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/LICENSE.txt",
+      "final_url": "https://raw.githubusercontent.com/godotengine/godot-docs/6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d/LICENSE.txt",
+      "content_type": "text/plain",
+      "origin": "version-and-license",
+      "saved_to": ".agents\\references\\godot-physics\\2026-10-25\\raw.githubusercontent.com\\godotengine\\godot-docs\\6d86d7c7f3b8f4f56c71e113022d72fe80b2c84d\\LICENSE.md",
+      "status": "written",
+      "repository_path": "LICENSE.txt"
+    }
+  ]
+}

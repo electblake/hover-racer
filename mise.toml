@@ -5,3 +5,85 @@ run = "godot --editor --path ."
 [tasks.play]
 description = "Launch Hover Racer"
 run = "godot --path ."
+
+[tasks.test]
+description = "Import assets and run all GUT unit and integration tests"
+run = [{ task = "test:import" }, { task = "test:all" }]
+
+[tasks."test:all"]
+description = "Run all discovered GUT tests"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-all.log --script addons/gut/gut_cmdln.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-all.log --script addons/gut/gut_cmdln.gd"
+timeout = "120s"
+
+[tasks."test:import"]
+description = "Import Godot resources for headless tests"
+run = "godot --headless --path . --import --log-file .godot/test-import.log"
+run_windows = "godot_console --headless --path . --import --log-file .godot/test-import.log"
+timeout = "120s"
+
+[tasks."test:unit"]
+description = "Pure thrust envelope timing and state transitions"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-unit.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/unit"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-unit.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/unit"
+timeout = "60s"
+
+[tasks."test:thrust"]
+description = "Authored and live vehicle tuning, thrust meter and layout"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-thrust.log --script addons/gut/gut_cmdln.gd -gselect=test_thrust.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-thrust.log --script addons/gut/gut_cmdln.gd -gselect=test_thrust.gd"
+timeout = "60s"
+
+[tasks."test:menu"]
+description = "Pause menu and input isolation"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-menu.log --script addons/gut/gut_cmdln.gd -gselect=test_menu.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-menu.log --script addons/gut/gut_cmdln.gd -gselect=test_menu.gd"
+timeout = "60s"
+
+[tasks."test:controller"]
+description = "Keyboard and controller handling"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-controller.log --script addons/gut/gut_cmdln.gd -gselect=test_controller_input.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-controller.log --script addons/gut/gut_cmdln.gd -gselect=test_controller_input.gd"
+timeout = "60s"
+
+[tasks."test:coast"]
+description = "Neutral input and passive coasting"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-coast.log --script addons/gut/gut_cmdln.gd -gselect=test_neutral_coast.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-coast.log --script addons/gut/gut_cmdln.gd -gselect=test_neutral_coast.gd"
+timeout = "60s"
+
+[tasks."test:power"]
+description = "Launch, camera and exhaust feedback"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-power.log --script addons/gut/gut_cmdln.gd -gselect=test_power_contrast.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-power.log --script addons/gut/gut_cmdln.gd -gselect=test_power_contrast.gd"
+timeout = "60s"
+
+[tasks."test:fall"]
+description = "Fall reset and resumed driving"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-fall.log --script addons/gut/gut_cmdln.gd -gselect=test_fall_reset.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-fall.log --script addons/gut/gut_cmdln.gd -gselect=test_fall_reset.gd"
+timeout = "60s"
+
+[tasks."test:hills"]
+description = "Course continuity and powered hill traversal"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-hills.log --script addons/gut/gut_cmdln.gd -gselect=test_hill_course.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-hills.log --script addons/gut/gut_cmdln.gd -gselect=test_hill_course.gd"
+timeout = "60s"
+
+[tasks."test:canyon"]
+description = "Canyon clearance, model and audio state"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-canyon.log --script addons/gut/gut_cmdln.gd -gselect=test_canyon_podracer.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-canyon.log --script addons/gut/gut_cmdln.gd -gselect=test_canyon_podracer.gd"
+timeout = "60s"
+
+[tasks."test:steering"]
+description = "Live steering tuning and angular response"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-steering.log --script addons/gut/gut_cmdln.gd -gselect=test_steering.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-steering.log --script addons/gut/gut_cmdln.gd -gselect=test_steering.gd"
+timeout = "60s"
+
+[tasks."test:integration"]
+description = "Run all discovered scene and input integration tests"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-integration.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/integration"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-integration.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/integration"
+timeout = "120s"
