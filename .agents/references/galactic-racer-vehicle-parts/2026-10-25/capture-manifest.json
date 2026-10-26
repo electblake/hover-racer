@@ -1,0 +1,82 @@
+{
+  "bundle": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25",
+  "requested_urls": [
+    "https://galacticracer.gameslantern.com/vehicles/arz-41",
+    "https://galacticracer.gameslantern.com/vehicles/darc-x",
+    "https://galacticracer.gameslantern.com/vehicles/dreshi",
+    "https://galacticracer.gameslantern.com/vehicles/zaknee",
+    "https://galacticracer.gameslantern.com/vehicles/wi-9",
+    "https://galacticracer.gameslantern.com/vehicles/vornskr",
+    "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide"
+  ],
+  "requested_domains": [],
+  "llms": [],
+  "mirrors": [
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/arz-41",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/arz-41",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\arz-41.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/darc-x",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/darc-x",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\darc-x.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/dreshi",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/dreshi",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\dreshi.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/zaknee",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/zaknee",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\zaknee.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/wi-9",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/wi-9",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\wi-9.md",
+      "status": "written"
+    },
+    {
+      "url": "https://galacticracer.gameslantern.com/vehicles/vornskr",
+      "final_url": "https://galacticracer.gameslantern.com/vehicles/vornskr",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\galacticracer.gameslantern.com\\vehicles\\vornskr.md",
+      "status": "written"
+    },
+    {
+      "url": "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide",
+      "final_url": "https://www.starwars.com/news/star-wars-galactic-racer-vehicle-guide",
+      "content_type": "text/html",
+      "origin": "requested-url",
+      "saved_to": "S:\\Spaces\\Gaming\\Hover-Racer\\.agents\\references\\galactic-racer-vehicle-parts\\2026-10-25\\www.starwars.com\\news\\star-wars-galactic-racer-vehicle-guide.md",
+      "status": "written"
+    }
+  ],
+  "errors": [
+    {
+      "url": "https://galacticracer.gameslantern.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    },
+    {
+      "url": "https://www.starwars.com/llms.txt",
+      "error": "HTTP 404: Not Found"
+    }
+  ]
+}
