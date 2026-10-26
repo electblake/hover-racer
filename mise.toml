@@ -23,13 +23,13 @@ run_windows = "godot_console --headless --path . --import --log-file .godot/test
 timeout = "120s"
 
 [tasks."test:unit"]
-description = "Pure thrust envelope timing and state transitions"
+description = "Vehicle rating mappings and isolation"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-unit.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/unit"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-unit.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/unit"
 timeout = "60s"
 
 [tasks."test:thrust"]
-description = "Authored and live vehicle tuning, thrust meter and layout"
+description = "Live seven-rating sandbox, resources and telemetry layout"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-thrust.log --script addons/gut/gut_cmdln.gd -gselect=test_thrust.gd"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-thrust.log --script addons/gut/gut_cmdln.gd -gselect=test_thrust.gd"
 timeout = "60s"
@@ -53,13 +53,13 @@ run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godo
 timeout = "60s"
 
 [tasks."test:power"]
-description = "Launch, camera and exhaust feedback"
+description = "Propulsion ceilings, boost resources and thermal crash"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-power.log --script addons/gut/gut_cmdln.gd -gselect=test_power_contrast.gd"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-power.log --script addons/gut/gut_cmdln.gd -gselect=test_power_contrast.gd"
 timeout = "60s"
 
 [tasks."test:fall"]
-description = "Fall reset and resumed driving"
+description = "Airborne momentum and crash respawn lifecycle"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-fall.log --script addons/gut/gut_cmdln.gd -gselect=test_fall_reset.gd"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-fall.log --script addons/gut/gut_cmdln.gd -gselect=test_fall_reset.gd"
 timeout = "60s"
@@ -77,7 +77,7 @@ run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godo
 timeout = "60s"
 
 [tasks."test:steering"]
-description = "Live steering tuning and angular response"
+description = "Steering authority, maneuver hysteresis and recovery"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-steering.log --script addons/gut/gut_cmdln.gd -gselect=test_steering.gd"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-steering.log --script addons/gut/gut_cmdln.gd -gselect=test_steering.gd"
 timeout = "60s"
@@ -86,4 +86,46 @@ timeout = "60s"
 description = "Run all discovered scene and input integration tests"
 run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-integration.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/integration"
 run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-integration.log --script addons/gut/gut_cmdln.gd -gdir=res://tests/integration"
+timeout = "120s"
+
+[tasks."test:timing:30"]
+description = "Recorded commands at 30 render FPS and 60/120 physics Hz"
+run = "godot --headless --fixed-fps 30 --path . --log-file .godot/test-timing-30.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+run_windows = "godot_console --headless --fixed-fps 30 --path . --log-file .godot/test-timing-30.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+timeout = "60s"
+
+[tasks."test:timing:60"]
+description = "Recorded commands at 60 render FPS and 60/120 physics Hz"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-timing-60.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-timing-60.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+timeout = "60s"
+
+[tasks."test:timing:144"]
+description = "Recorded commands at 144 render FPS and 60/120 physics Hz"
+run = "godot --headless --fixed-fps 144 --path . --log-file .godot/test-timing-144.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+run_windows = "godot_console --headless --fixed-fps 144 --path . --log-file .godot/test-timing-144.log --script addons/gut/gut_cmdln.gd -gselect=test_vehicle_timing.gd"
+timeout = "60s"
+
+[tasks."test:physics"]
+description = "Mass, inertia, hover, contact friction, fluids and timestep stability"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-physics.log --script addons/gut/gut_cmdln.gd -gselect=test_physical_vehicle.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-physics.log --script addons/gut/gut_cmdln.gd -gselect=test_physical_vehicle.gd"
+timeout = "60s"
+
+[tasks."test:venus"]
+description = "Venus liquid course, reactive wakes and weather lifecycle"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-venus.log --script addons/gut/gut_cmdln.gd -gselect=test_venus.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-venus.log --script addons/gut/gut_cmdln.gd -gselect=test_venus.gd"
+timeout = "60s"
+
+[tasks."test:regressions"]
+description = "Driving lockups, stopping forces, collisions and reset regressions"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-regressions.log --script addons/gut/gut_cmdln.gd -gselect=test_driving_regressions.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-regressions.log --script addons/gut/gut_cmdln.gd -gselect=test_driving_regressions.gd"
+timeout = "60s"
+
+[tasks."test:jupiter"]
+description = "Jupiter lap feasibility, gravity, rail escape and lifecycle regression checks"
+run = "godot --headless --fixed-fps 60 --path . --log-file .godot/test-jupiter.log --script addons/gut/gut_cmdln.gd -gselect=test_jupiter.gd"
+run_windows = "godot_console --headless --fixed-fps 60 --path . --log-file .godot/test-jupiter.log --script addons/gut/gut_cmdln.gd -gselect=test_jupiter.gd"
 timeout = "120s"

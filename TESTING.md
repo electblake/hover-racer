@@ -1,133 +1,92 @@
-# Hover Racer — keyboard and controller controls
+# Physical driving verification
 
-Reopen the project after input-map changes, then run Main with F6. Preserve any unsaved editor work separately before reloading external edits.
+The current contract is [VEHICLE_SPEC.md](VEHICLE_SPEC.md). The vehicle is now force-driven `RigidBody3D`; historical kinematic cap/alignment descriptions below are superseded by this section.
 
-## Controls
+Verified 2026-10-25 on Godot 4.7.2: the final coordinated `mise run test` completed import plus **100 tests / 24,188 assertions**, all passing, with no engine/script errors, interpolation warnings or leaked-object warnings in the captured console output (`.godot/audit-final-console.log`). Separate `test:timing:30` and `test:timing:144` runs passed. Coverage includes all-map crash/reset/restart, controller-only setup exit, profile persistence and focus-loss dialogs, live binding hints, stop/turn/rail recovery, overlapping fluids, submerged recovery, Jupiter full laps at 60/120 Hz, and garage integration. This is automated simulation/layout verification plus a rendered SN30 crash-HUD check; physical controller feel was not evaluated.
 
-The compact **Vehicle sandbox** is restored as an embedded Godot window. Drag its title bar to move it and its outer borders/corners to resize it. The scrollable form exposes acceleration, maximum speed, thrust ADSR, turn speed/boost/acceleration/deceleration, and stick deadzone using linked sliders and spinboxes. Close it with X and reopen it via **Controls → Show vehicle sandbox**. Tuning, visibility, position and size persist in `user://vehicle_sandbox.cfg`. The sandbox hides while the game menu is open.
+Ship teardown stops audio players and releases their streams. The Venus test fixture observes actual wind-stream release through a weak reference before finishing, because AudioServer mixer retirement is asynchronous to accelerated simulation frames. The existing task timeout still exposes stalled cleanup.
 
-Sandbox regression coverage includes native embedded-window mouse dragging/resizing, live values, saved tuning and geometry across scene recreation, and closing/reopening. Mouse tests submit viewport-local coordinates to Godot's embedded-window input path.
 
-- The game menu opens paused with **New Race** selected. New Race resets the vehicle and starts driving; **Controls** opens the controls panel. During a race, Escape or controller Menu/Start opens the game menu with **Resume Race** selected. Resume preserves the current run; New Race restarts it with current tuning intact.
-- Navigate with arrows/D-pad and confirm with Enter/controller A. Back, Escape, controller B, or Menu/Start returns from Controls to the game menu while remaining paused. Escape/Menu resumes an active race from the game menu; the initial screen stays paused until New Race is selected. The thrust meter appears while racing.
-- Driving and reset inputs do not affect the ship while the menu is open. Releasing a held input during pause is respected on resume. Holding Escape does not repeatedly toggle the menu.
-- RT: analog gas; both engine pods share throttle.
-- LT: analog air brake. Full brake overrides simultaneous gas.
-- Left stick horizontal: moderate continuous yaw and bank.
-- Right stick horizontal: the same contribution, added to the left stick.
-- Both sticks together: twice one stick's turn rate. Opposed horizontal inputs cancel.
-- Pull the inside stick down while steering for a sharper turn and stronger bank. Vertical input alone does not turn or propel the ship. Stick-up input participates in radial normalization and cancels pull-down on the same stick.
-- Main keyboard controls: Spacebar thrust, Shift air brake, Left/Right arrows full steering (both virtual sticks), Down arrow sharp turn, Up arrow pushes both sticks up. Down pulls both sticks down; the inside stick supplies turn assistance.
-- WASD are modifiers: W pushes both sticks up, S pulls both down for sharp turns, A/D pull the left/right stick down independently. Q/E also pull the left/right stick down.
-- I/J/K/L control the left stick up/left/down/right. T/F/G/H control the right stick up/left/down/right. Independent horizontal keys contribute half the full steering rate; opposed inputs cancel.
-- Left/Right arrows plus a same-direction independent stick key do not exceed full steering. Keyboard diagonals use the same radial normalization as controller diagonals.
-- Keyboard keys are digital; controller triggers and sticks retain analog response. Both devices remain available without a mode switch.
-- Y/R resets the ship, visuals, camera and audio.
+- `mise run test` is the full import + GUT gate.
+- `mise run test:physics` covers mass scaling, rotational inertia, hover settling/payload, unsupported gaps, contact friction, floating displacement, currents, gas without floor support, overlap partitioning, relative-flow drag, asymmetric immersion and high-speed fluid stability.
+- `mise run test:hills` includes 140 m/s crest/descent checks at both 60 and 120 Hz, requiring support, less than 2 m clearance and preserved health.
+- `mise run test:timing:30`, `test:timing:60`, and `test:timing:144` replay commands at 60/120 physics Hz under differing render rates.
+- Movement suites now assert force-driven acceleration, lower partial-throttle equilibrium, finite lateral forces, airbrake speed cost and momentum retention after boost release. Resource, input, menu, ability and collision regressions remain required.
+- Venus support tests sample its physical fluid region instead of treating a liquid as a solid ray-hit floor. Physics Lab is independently selectable after Venus.
 
-Stick horizontal deadzone is 0.18; trigger deadzone is 0.06, with proportional response outside the deadzone. Holding a steering input rotates continuously; it does not aim at a fixed heading.
+Play check: W/RT accelerates; A,D/left stick steers; S/LT brakes; Space/A airbrakes before corners. Shift/RB spends Afterburner fuel, Ctrl/LB builds Ramjet heat. E/B activates the diagnostic pulse; R/Y resets. Select Physics Lab for ice/water/current/wind, or Venus for the liquid course. Confirm chassis follows hills, gaps allow falling, and no cosmetic 1.3 m offset separates the visible hull from its collision body.
 
-## Handling
+Headless checks verify simulation and UI layout, not physical controller feel or rendered comfort. Water uses sampled rigid-body forces, not a fluid solver.
 
-Tune the vehicle through Godot's Inspector. In `Main.tscn`, select `SHIP`: its exported properties are grouped into Drive, Thrust Envelope, Steering, Visual Banking and Pitch, Input, Camera, and Hover. Hover over the envelope and steering fields for descriptions and units.
+---
 
-For persistent live tuning, run `mise run editor`, enable **Debug > Synchronize Scene Changes**, and press **F5**. Start **New Race**. While it runs, select `SHIP` in the **Local** scene tree, edit its Inspector properties, and save `Main.tscn`. Godot synchronizes those edits to the running vehicle and the saved scene keeps them for the next run. Editing a script's default initializer is not the same as editing an instance property.
+# Hover Racer controls and verification
 
-For temporary experiments, select `root/Node3D/SHIP` in the **Remote** scene tree. Its Inspector edits affect only the current run; copy any values you want to keep into the Local `SHIP` and save the scene. The embedded Game view also provides 3D selection, pause, frame advance, and slow motion. Use Input mode again to drive after selecting objects.
+The implementation contract is [VEHICLE_SPEC.md](VEHICLE_SPEC.md). The game uses Godot 4.7.2, Jolt, a grounded CharacterBody3D and one physics simulation for player and recorded/AI commands. Units are metres and seconds. The visual hover offset never moves the collision hull.
 
-The editor feature override uses windowed mode so Godot can embed the game. In the Game toolbar menu, enable **Embed Game on Next Play** and disable **Make Window Floating on Next Play** to keep the game and Inspector together. Exported games retain the maximized startup mode.
+## Play and tune
 
-The custom sandbox editor and its autosave loaders have been removed. Existing `user://vehicle_settings.cfg`, `steering_settings.cfg`, `drive_settings.cfg`, and `sandbox_window.cfg` files are left on disk but are no longer read or written by gameplay. Scene properties and script defaults now determine startup tuning. `mise run play` remains available for standalone play; use the editor's F5 run for an attached Remote Inspector.
+Run `mise run play`, choose New Race, and drive with W/S throttle/brake and A/D steering. Shift uses Afterburner, Ctrl uses Ramjet, Space engages drift, E activates the diagnostic pulse, and R respawns. On a controller use RT/LT, left stick, RB/LB, A, B and Y respectively. Esc/Start opens the pause menu. Brake takes priority, then drift/recovery, then Ramjet, then Afterburner. Held special actions must be released after menu/focus changes.
 
-Steering defaults are 1.8 rad/s turn speed, 3 rad/s sharp-turn boost, 36 rad/s² turn acceleration, 48 rad/s² turn deceleration, and 0.18 radial stick deadzone. Higher acceleration gives faster onset/reversal; higher deceleration stops turning sooner on release. `mise run test:steering` checks runtime property edits, angular acceleration, sustained rate, release, reversal, and reset.
+The seven sandbox sliders update ratings immediately without refilling resources. Sandbox edits are temporary and copy the preset before changing it. Enter leaves a rating text field; gameplay is gated while editing. Presets are immutable to the controller: edit `balanced_vehicle.tres` in the Inspector for authored values. Shared constants are in `default_vehicle_tuning.tres`. The default `pulse_ability.tres` costs 40 energy, has a two-second cooldown, and emits an activation event; it is a diagnostic ability with no combat effect.
 
-References: [Godot live scene/script synchronization and Remote Inspector](https://docs.godotengine.org/en/latest/tutorials/scripting/debug/overview_of_debugging_tools.html), [embedded Game tools and persistence](https://docs.godotengine.org/en/latest/tutorials/editor/game_embedding.html).
+The HUD displays drive speed in km/h, boost/airbrake state, fuel, heat, battery and hull meters, ability readiness/cooldown, impairment and crash warnings. Ability, respawn and pause hints use the current keyboard/controller bindings, including SN30 face labels. The Controls page also reflects remapping. Crashes remain stopped until the active Respawn control or New Race resets the vehicle.
 
-Thrust has an ADSR envelope: 0.12 s attack, 0.18 s decay, 92% sustain, and a smooth 0.28 s release. Analog gas scales the envelope. Full brake overrides propulsion immediately. Passive coasting begins once released thrust reaches zero; reset clears the envelope. Default launch reaches about 14.6 m/s after 0.1 s and the speed cap in about 0.42 s.
+Controller Setup provides Xbox Wireless Controller and SN30 Pro presets, a Custom working set, and named saved profiles. Choose a set and press Load. Remap an action, choose Save profile, enter a name and confirm; using an existing name explicitly replaces that profile. Controller profiles preserve keyboard mappings and use the same physical positions on both pads. SN30 Pro uses Windows X-input mode (X + Start); its face labels are B for airbrake, A for ability and X for respawn. Named profiles and active controls persist in `user://vehicle_controls_v2.cfg` and reload on startup. Keyboard remaps remain global. Raw controller inputs are available under Show raw controller inputs; the live meters remain available for testing. Escape cancels capture. Setup supports mouse, keyboard and controller navigation. B/Back or Menu leaves setup outside capture; while capturing, those buttons can be assigned without exiting. Returning to the game menu closes an unfinished profile-name dialog. The `test_controller_setup.gd` integration suite covers presets, named save/load/replacement, restart persistence, naming dialog, input isolation and layout.
 
-The bottom-right segmented meter shows actual applied thrust after braking, not speed or raw gas input. Empty segments are dark, followed by green, yellow and red ranges as thrust rises.
+## Automated verification
 
-`mise run test:unit` covers envelope timing, retriggering, analog gas and sustain endpoints. `mise run test:thrust` covers authored tuning, ignored legacy settings, temporary runtime edits, live acceleration/speed-cap changes, actual acceleration/meter agreement, brake override, reset, and HUD layout at 640×480, 1280×720 and 1920×1080. Tests use fresh isolated settings and never read or restore player tuning.
+Run `mise run test` for resource import and the full vendored GUT 9.7.1 suite. This is the final verification gate. Windows tasks use `godot_console`; do not substitute a custom runner. GUT reports assertions and unexpected engine errors, with logs in `.godot/test-*.log` and final JUnit output in `.godot/test-results.xml`.
 
-Burst on the gas, release it to glide while lining up a turn, then reapply gas to pull toward the new nose direction. Off-throttle turning does not redirect horizontal velocity. Passive drag reduces speed at 26 m/s²: a four-second stop from 104 m/s. Steering does not disable drag. LT/Shift adds 100 m/s² of braking at full input, stopping from top speed in about 0.83 seconds including passive drag. Thrust acceleration is 300 m/s² and horizontal speed is capped at 104 m/s.
-
-One full stick turns at 0.9 rad/s; both turn at 1.8 rad/s. Mesh bank is smoothed up to 36 degrees during normal steering and capped at 50 degrees with sharp-turn assistance. Stronger visual yaw gives a boat-like stern swing (up to about 17 degrees off gas, reduced under power). These visuals do not tilt or offset the physical collider or rotate the camera independently. The existing coasting skip and hover bob remain subtle mesh motion.
-
-The saved course is approximately 918 metres long and 28 metres wide, with six rounded corners, a dogleg, and hills rising 10 and 14 metres. Hover suspension follows road collisions. The canyon slice adds close cliffs, repeated lit posts, ground rocks and three overhead arches while preserving road and camera clearance. Falling off the course resets the ship.
-
-The original local low-poly model has separated gold/blue engine pods, a trailing cockpit, tethers, an energy linkage and rotating intake blades. Its collider is 3.1 × 0.4 × 4.6 metres. Both engines now respond together to RT, including their exhausts. Engine audio stays disabled; original audio assets are retained. Subdued wind follows actual horizontal speed and stops at rest.
-
-The chase camera frames both engines and cockpit. Thrust adds a smooth pullback of 1.1 metres plus a brief onset cue up to 0.4 metres; release returns to the resting position. FOV changes by at most 12 degrees (4 from speed, 6 from sustained gas, 2 from onset). There is no camera shake, roll or bob.
-
-## Verification
-
-Run from the repository root with mise and the Godot 4.7 editor installed on PATH (verified with 4.7.2). Windows test tasks use `godot_console` from the Godot installation for synchronous console output and exit status; interactive tasks still use `godot`.
-
-```powershell
-mise run test
-```
-
-This imports resources and runs GUT 9.7.1, vendored under `addons/gut` for Godot 4.7. `.gutconfig.json` discovers `test_*.gd` in `tests/unit/` and `tests/integration/`. GUT owns assertions, test lifecycle, engine-error tracking, exit codes, and JUnit output. The full run has a 120-second timeout; focused scripts have 60 seconds. The addon is included in the repository, so no test-time download is needed. See [dependency provenance](tests/DEPENDENCIES.md).
-
-Layout:
-
-```text
-tests/
-  unit/test_thrust_envelope.gd   # RefCounted logic, no scene
-  integration/test_*.gd         # Input, physics, UI, persistence, course
-  support/game_test.gd          # Fresh settings and global-state cleanup
-```
-
-Use `mise run test:unit` or `mise run test:integration` for a whole layer. `mise run test:all` runs both layers without reimporting. New files matching the naming convention are discovered automatically; a dedicated mise task is optional.
-
-For focused work, run `mise run test:import` after a fresh checkout or asset changes, then select a task:
-
-| Task | Coverage |
+| Task / suite | Coverage |
 | --- | --- |
-| `test:unit` | Pure ADSR logic: attack/decay/sustain/release, analog input, retrigger, reset, bounds, 30/60/120 Hz steps |
-| `test:thrust` | Authored defaults, ignored legacy settings, temporary runtime edits, live drive limits, physics-driven thrust, HUD, braking, reset, three viewport sizes |
-| `test:steering` | Live steering properties, acceleration/deceleration, reversal, reset |
-| `test:menu` | Startup pause, Escape/Start, echo suppression, blocked driving/reset, released input on resume, responsive layout |
-| `test:controller` | Physical keyboard/joypad bindings, analog/deadzones, additive/opposed steering, sharp turns, braking, speed cap, reset |
-| `test:coast` | Neutral/noisy input, monotonic drag, preserved travel direction, four-second stop, audio/exhaust state |
-| `test:power` | Launch timing, speed cap, bounded camera/FOV, release and repeated taps |
-| `test:fall` | Off-course fall reset, restored heading/momentum/thrust/camera, subsequent acceleration |
-| `test:hills` | Saved course cross sections/barriers, both hills at speed, hover clearance, level collider |
-| `test:canyon` | 470 clearance positions, ship envelope/model, exhaust, audio resources and playback state |
+| `test:unit` | Rating defaults, endpoints, clamping, rating isolation |
+| `test:power` | Acceleration, analog throttle, ordinary/boost ceilings, depletion latch, boost priority, heat warning and crash |
+| `test:coast` | Coasting, proportional braking, no reverse, magnitude-preserving alignment |
+| `test:steering` | Steering sign/smoothing/rest authority, maneuver entry/exit hysteresis, recovery and boost exclusion |
+| `test:controller` | Physical keyboard bindings, trigger deadzone, opposing inputs, menu rearming and discarded presses |
+| `test:menu` | Startup, navigation, pause/resume, reset isolation, responsive layout |
+| `test:thrust` | Seven-rating sandbox, preset immutability, live resources and responsive HUD |
+| `test:regressions` | Steering at rest, stopping impulses, racer collisions, reset force state, submerged recovery, overlapping surface priority and underwater braking |
+| `test:jupiter` | Ring support, lateral gravity, full laps at 60/120 Hz, rail escape, fall/reset and map cleanup |
+| `test:fall` | Airborne momentum/gravity/facing, air ability, crash and respawn |
+| `test:hills` | Road cross sections/barriers and both actual hills with grounded movement |
+| `test:canyon` | 470 scenery/shape clearance samples, model, exhaust, camera and audio behavior |
+| `test_vehicle_garage.gd` (full/integration suite) | All 27 cosmetic builds, preview agreement, unchanged physics, exhaust switching, kit presets, reset/map retention, controller access and small layout |
+| `test:integration` | All above plus collisions, relative normal damage, landing crash ordering, resource delays, live capacities and shared presets |
+| `test:timing:30`, `test:timing:60`, `test:timing:144` | Same recorded commands at three render clocks, each comparing 60 and 120 physics ticks with tolerance |
 
-GUT prints named cases, assertion counts, failures and a final run summary. The most recent run writes `.godot/test-results.xml` in JUnit format; task logs are `.godot/test-*.log`. Assertions and unexpected engine/script errors produce a failing exit status. Do not disable error tracking or use `--quit-after` as a success gate. Focused runs replace the JUnit report, so use the full task for the final verification artifact.
+Tests use fresh game-save namespaces and restore input, pause, viewport and physics rate. They advance actual physics frames rather than calling `_physics_process` directly. Old thrust-envelope tests were replaced with tests of the specified acceleration and resource behavior. The original geometry, remapping, menu and audiovisual regression checks remain, updated where their old expectations conflicted with the new contract.
 
-Integration tests inherit `tests/support/game_test.gd`, which selects fresh game settings before each test and restores pause, input and viewport state afterward. Pure unit tests extend `GutTest`. Test methods are named `test_<behavior>`; use `before_each()`/`after_each()` for fresh fixtures, calling `super` when extending the project fixture. Register scene ownership with `add_child_autofree()` so GUT also cleans up after an interrupted test. Existing explicit scene frees allow deferred teardown to complete before the next case.
+Headless checks cannot establish physical controller feel or keyboard rollover. Rendered HUD/sandbox and menu inspection is separate from the automated gate. The local physics reference topics used are CharacterBody movement, ray queries and 3D collision shapes; the linked Godot 4.7 API documentation establishes last-movement floor semantics and collision reporting.
 
-Gameplay tests advance real physics frames at 60 Hz with fixed delta; unit tests supply explicit deltas. UI/layout work waits for process frames. No direct `_physics_process()` calls or wall-clock sleeps are needed. Reset bindings are checked immediately after input dispatch, before suspension advances the vehicle. Input events use distinct instances for press and release. Tests retain behavioral tolerances and cover transitions without depending on a previous test's state.
+## Maps
 
-Each test-data namespace is separate from player tuning; test settings remain available under `Hover Racer Tests-*` in Godot's user-data directory. GUT may use its own temporary-output directory as reported at startup. Headless tests verify layout and playback state, not rendered appearance, audible mix, controller feel or physical keyboard rollover.
+The map-selection menu displays a live, isolated preview world. A cosmetic racer follows the road center at 12 m/s, looping the selected course while the real race stays paused. Browsing updates the preview immediately; Resume retains the race and New Race starts at the selected spawn. The straight Physics Lab uses a narrow oval tour. Preview rendering and scenery are removed when leaving map selection. `test_menu.gd` verifies cruise speed, route following, loop wrapping, every map, and paused-race isolation; `tools/preview_menu.gd` captures the rendered menu.
 
-References: [GUT 9.7.1 CLI](https://gut.readthedocs.io/en/v9.7.1/Command-Line.html), [GUT test lifecycle](https://gut.readthedocs.io/en/v9.7.1/Creating-Tests.html), [Godot frame signals](https://docs.godotengine.org/en/stable/classes/class_scenetree.html), and [mise task timeouts](https://mise.jdx.dev/tasks/task-configuration). Agent workflow: [.agents/skills/hover-racer-test/SKILL.md](.agents/skills/hover-racer-test/SKILL.md).
+Use the menu's < / > buttons, Left/Right keys, or D-pad Left/Right to cycle maps. New Race loads the selection; Resume Race retains the paused map. Map 1 is Test Canyon (924 m). Map 2 is Long Canyon (2,771 m), with longer straights and hills, the same six corners, and corner radii of 35 m versus 28 m. Road width stays 28 m.
 
-Simulated input tests cover single/additive steering, signs, cancellation, analog magnitudes/deadzones, vertical bindings and sharp-turn diagonal parity, independent off-gas facing/travel, gas reapplication, air braking, speed cap, keyboard and reset. The neutral test verifies the four-second stop and absence of unintended power. Hill tests traverse both actual hills under power at the cap. Canyon tests check 470 clearance samples, model/exhaust, audio mute/wind and restrained camera effects. Physical controller feel, sound balance and comfort need an in-game test.
+Each `maps/map_N.tres` defines its name, scene, spawn, corners, hills and generation outputs. Its `maps/map_N.tscn` combines road and scenery. Add definitions to `MAPS` in `test_track.gd` to extend the selector. The original saved road and scenery remain in `TestTrack.tscn` and `CanyonSlice.tscn`.
 
-`tools/build_course.gd` regenerates TestTrack.tscn and course_samples.json, replacing manual course edits. `tools/build_canyon.gd` regenerates the independent CanyonSlice.tscn. Back up before regenerating. Files before the current control change are in `backups/before-trigger-additive-steering`, with `.bak` suffixes.
+Rebuild a map's saved geometry with `godot_console --headless --path . --script res://tools/build_course.gd -- res://maps/map_2.tres`, then `godot_console --headless --path . --script res://tools/build_canyon.gd -- res://maps/map_2.tres`. Substitute `map_1.tres` to rebuild Map 1. The full gate includes `test_maps.gd` for 3D lap length, corner proportions, road continuity, barriers and scenery clearance, and menu coverage for switching and paused-race isolation.
 
-## Stronger power/coast contrast
+### Map 3: Venus — Aureate Sea
 
-Acceleration is 300 (previously 145), with a 104 m/s cap. With the thrust envelope, straight-line launch reaches about 14.6 m/s in 0.1 seconds and the cap in about 0.42 seconds. Passive slowing is 26 m/s², stopping from the cap in four seconds. Active gas, airbrake, additive steering and independent off-gas heading are unchanged.
+A 1,617 m flat course with a yellow-gold liquid surface, speed-responsive wakes, rain-impact ripples, green acid rain, sulfur haze and alien spires. The surface uses the shared fluid simulation with a level free surface, a gentle current and reactive visual wakes. Its wet-driving modifier uses 18% of dry-road lateral/braking force capacity, producing longer sideways slides and braking distances while preserving liquid hover support. Acid rain is visual and does not apply damage. Map-specific environments restore when changing races. Venus is Map 3; Physics Lab remains available after it.
 
-Camera power response is faster and more visible: 1.1m sustained pullback, up to 0.4m additional visual onset, with a total bound of 1.5m. Onset is visual only; repeated taps cannot stack velocity boosts or unbounded camera movement. FOV has a 12-degree total bound and decreases clearly on release; camera rotation is stable and shake-free. Exhaust plumes and power pitch are stronger. Engine audio stays disabled and quiet wind remains.
+Rebuild its road with `godot_console --headless --path . --script res://tools/build_course.gd -- res://maps/map_3.tres`. `maps/venus.gd` supplies its scenery/weather and `maps/venus_liquid.gdshader` supplies the liquid. Run `mise run test:venus` for course support, racer-driven wake updates, pause behavior, environment cleanup, wet braking/restart and countersteering at 60/120 Hz, repeated map switches, crash/reset recovery, off-course restart and submerged recovery without resetting. Menu tests also verify every map selector fits a 640×480 viewport. `tools/preview_venus.gd` renders menu/racing screenshots to `previews/venus-menu.png` and `previews/venus-racing.png`.
 
-```
-mise run test:power
-```
+### Map 4: Jupiter — Ringrunner
 
-This checks measured launch against the prior acceleration, camera/FOV onset and return, bounded per-frame camera movement, release contrast, repeated-tap caps and reset. Controller comfort still needs in-game testing. Backup: `backups/before-launch-camera-contrast`.
+A stylized 2,262 m circular ring course, 36 m wide, surrounded by dust bands and stars. Race in the starting direction to keep Jupiter and the inward gravity on your left. The map applies a 4.5 m/s² horizontal inward acceleration as a mass-scaled central force at physics tick rate. Countersteer right to resist the drift. Gravity pauses with the race and is removed when switching maps; ordinary vertical support remains unchanged.
 
-Reference: the official developer article, “Feel the Speed: Game Feel in STAR WARS: Galactic Racer,” discusses responsive physical feedback and hover/speed challenges: https://starwarsgalacticracer.com/news/feel-the-speed-game-feel-in-star-wars-galactic-racer/ . The official gameplay trailer article was also read; trailer playback was not available in this tool session, so the video was not watched.
+One fixed Great Red Spot is painted into the planet at the quarter-orbit longitude, marked by one viewing sign per circuit. A gentle inward camera glance during the approach exposes the storm; camera yaw restores when leaving the map. Physics Lab follows Jupiter as Map 5. `tests/integration/test_jupiter.gd` checks full-ring support, leftward force direction, actual displacement, pause and cleanup. `tools/preview_jupiter.gd` captures the rendered start and storm approach in `previews/`.
 
-## Keyboard implementation verification
 
-All five headless suites passed on Godot 4.7.2 with zero failures: controller_input, neutral_coast, power_contrast, hill_course and canyon_podracer. Input tests exercise physical-key events and joypad events, including full/independent steering, cancellation, every vertical key, sharp-turn parity, gas/brake precedence, released inputs, controller analog input after keyboard release, and Y/R reset.
+### Pause, controller navigation and lifecycle regression audit
 
-Manual check: run `mise run play`, close the startup menu with Escape or Menu/Start, drive using Space+Left/Right+Down, release Down mid-turn, brake with Shift, and reset with R. Open the menu while moving and verify the race pauses; close it and verify the race resumes with the thrust meter visible. Check the independent stick keys and repeat with a physical controller. Physical keyboard rollover and controller feel require this hands-on check.
+`test_ui_lifecycle_regressions.gd` exercises controller-only exits from Setup, sandbox focus across pause/resume, preserved motion and frozen timers while paused, and repeated crash/respawn/driving on every selected map. Setup now lets unbound navigation events reach the GUI; B/Menu returns to the game menu while an active binding capture still consumes its input.
 
-The menu suite and all five existing regression suites passed after the pause-menu change. Movement suites explicitly close the startup menu before exercising physics. Menu tests cover startup visibility, Escape/Menu toggles, keyboard repeat, frozen movement, blocked reset, gas released during pause, and layout at three window sizes using the scaled logical viewport. The running game's default menu layout was also visually inspected.
+`test_physics_lifecycle_regressions.gd` verifies cleared force telemetry on respawn, frozen editing without erased momentum or extra thrust, angular reset after tumbling, respawn while gated, and rapid repeated pause transitions. Frozen rigid-body velocities are retained explicitly and restored in the physics integration callback.
 
-Controller diagnostics: tests/integration/test_controller_diagnostics.gd covers live input meters, menu isolation, button and signed-axis remapping, keyboard preservation, saved bindings, cancellation, and small viewport layout. Physical controller recognition and feel require manual verification.
+The hill clearance test uses a single 2 cm sphere sweep across triangle seams, with the existing support-loss, health and maximum-clearance requirements. Camera-local presentation does not interpolate a second time over the interpolated chassis; viewport resizing and map-specific camera glances remain valid outside physics ticks. Visual reset placement is applied on a physics tick.
